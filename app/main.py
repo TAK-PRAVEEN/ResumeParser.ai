@@ -1,94 +1,95 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
-import os
-import uuid
+from flask import Flask, request, jsonify, send_file, render_template
 from werkzeug.utils import secure_filename
+import os
+# import parser
+from database import db, resume_ops, user_ops
+import uuid
 
-# Initialize Flask app
-app = Flask(__name__)
-app.secret_key = os.urandom(24)  # Secret key for session management
+template_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), r'E:\ResumeParser.ai\frontend\templates'))
+static_path = os.path.abspath(os.path.join(os.path.dirname(__file__), r'E:\ResumeParser.ai\frontend\static'))
 
-# Configure upload folder
-UPLOAD_FOLDER = 'uploads'
-ALLOWED_EXTENSIONS = {'pdf', 'doc', 'docx'}
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app = Flask(__name__, template_folder=template_dir, static_folder=static_path)
+# UPLOAD_FOLDER = 'uploads'
+# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# Create upload folder if it doesn't exist
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-def parse_resume(filepath):
-    """
-    Placeholder function for resume parsing logic.
-    Replace this with your actual resume parsing implementation.
-    """
-    # This is where you would integrate your NLP/ML model for parsing
-    return {
-        'name': 'John Doe',
-        'email': 'john@example.com',
-        'skills': ['Python', 'Flask', 'Machine Learning'],
-        'experience': ['Software Engineer at XYZ (2020-present)'],
-        'education': ['BSc in Computer Science']
-    }
+# Ensure upload directory exists
+# os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 @app.route('/')
-def index():
-    return render_template('index.html')
+def home():
+    return render_template("home.html")
 
-@app.route('/upload', methods=['POST'])
-def upload_file():
-    if 'file' not in request.files:
-        flash('No file selected')
-        return redirect(url_for('index'))
-    
-    file = request.files['file']
-    if file.filename == '':
-        flash('No file selected')
-        return redirect(url_for('index'))
-    
-    if file and allowed_file(file.filename):
-        # Generate unique filename to prevent collisions
-        filename = str(uuid.uuid4()) + '_' + secure_filename(file.filename)
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(filepath)
-        
-        # Parse the resume
-        try:
-            parsed_data = parse_resume(filepath)
-            return render_template('results.html', data=parsed_data)
-        except Exception as e:
-            flash(f'Error parsing resume: {str(e)}')
-            return redirect(url_for('index'))
+@app.route('/register')
+def register():
+    email = request.get('email')
+    password = request.get('password')
+    user_ops.register_user(email, password)
+
+@app.route('/login')
+def login():
+    email = request.get('email')
+    password = request.get('password')
+    if user_ops.validate_login(email, password):
+        return True
     else:
-        flash('Allowed file types are pdf, doc, docx')
-        return redirect(url_for('index'))
+        return False, "Invalid Email/Password!"
 
-@app.route('/api/parse', methods=['POST'])
-def api_parse():
-    """
-    API endpoint for resume parsing
-    """
-    if 'file' not in request.files:
-        return jsonify({'error': 'No file uploaded'}), 400
+# @app.route('/upload', methods=['POST'])
+# def upload_resume():
+#     file = request.files.get('file')
+#     email = request.form.get('email')
     
-    file = request.files['file']
-    if not file:
-        return jsonify({'error': 'Empty file uploaded'}), 400
-    
-    if file and allowed_file(file.filename):
-        filename = str(uuid.uuid4()) + '_' + secure_filename(file.filename)
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(filepath)
-        
-        try:
-            parsed_data = parse_resume(filepath)
-            return jsonify({'success': True, 'data': parsed_data})
-        except Exception as e:
-            return jsonify({'error': f'Parsing error: {str(e)}'}), 500
-    
-    return jsonify({'error': 'Invalid file type'}), 400
+#     if not file or not email:
+#         return jsonify({"error": "File and Email are required"}), 400
+
+#     filename = secure_filename(file.filename)
+#     filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+#     file.save(filepath)
+
+#     # Parse and segment
+#     raw_text = data_ingestion(filepath)
+#     tokenized = preprocess(raw_text)
+#     structured_data = section_identification(tokenized, raw_text)
+
+#     # Save to DB
+#     structured_data['email'] = email
+#     structured_data['resume_id'] = str(uuid.uuid4())
+#     save_to_mongo(structured_data)
+
+#     # Save formats locally (optional)
+#     csv_format(structured_data)
+#     json_format(structured_data)
+#     excel_format(structured_data)
+
+#     return jsonify({
+#         "message": "Resume processed and stored",
+#         "resume_data": structured_data
+#     }), 200
+
+# @app.route('/get_resume', methods=['GET'])
+# def get_resume():
+#     email = request.args.get('email')
+#     if not email:
+#         return jsonify({"error": "Email is required"}), 400
+
+#     data = get_resume_by_email(email)
+#     if not data:
+#         return jsonify({"error": "Resume not found"}), 404
+
+#     return jsonify(data), 200
+
+# @app.route('/download/<filetype>', methods=['GET'])
+# def download_file(filetype):
+#     if filetype == 'json':
+#         path = "resume_data.json"
+#     elif filetype == 'csv':
+#         path = "resume_data.csv"
+#     elif filetype == 'excel':
+#         path = "resume_data.xlsx"
+#     else:
+#         return jsonify({"error": "Invalid filetype"}), 400
+
+#     return send_file(path, as_attachment=True)
 
 if __name__ == '__main__':
     app.run(debug=True)

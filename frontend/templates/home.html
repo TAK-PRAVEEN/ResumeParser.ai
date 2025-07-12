@@ -183,28 +183,23 @@
   <!-- Modal Overlay -->
   <div id="overlay"></div>
 
-  <!-- Modal -->
-  <div id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-   <div id="modal-content">
-        <h1 id="modal-title">Register</h1>
-    <button aria-label="Close" id="closeBtn" class="close-btn">
-        <svg width="29" height="29" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M7.73335 22.9584L6.04169 21.2667L12.8084 14.5L6.04169 7.73335L7.73335 6.04169L14.5 12.8084L21.2667 6.04169L22.9584 7.73335L16.1917 14.5L22.9584 21.2667L21.2667 22.9584L14.5 16.1917L7.73335 22.9584Z" fill="#1D1B20"/>
-        </svg>
-    </button>
-    <form>
-     <label for="email">Email</label>
-     <input
-       type="email"
-       id="email"
-       placeholder="example@gmail.com"
-       autocomplete="email"
-     />
-     <label for="password">Password</label>
-     <input type="password" id="password" autocomplete="current-password" />
-     <button type="submit" class="register-btn">Register</button>
-    </form>
-    <p class="or-text">OR</p>
+  <!-- Register Modal -->
+    <div id="registerModal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div id="modal-content">
+            <h1 id="modal-title">Register</h1>
+            <button aria-label="Close" id="closeBtn" class="close-btn">
+                <svg width="29" height="29" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7.73335 22.9584L6.04169 21.2667L12.8084 14.5L6.04169 7.73335L7.73335 6.04169L14.5 12.8084L21.2667 6.04169L22.9584 7.73335L16.1917 14.5L22.9584 21.2667L21.2667 22.9584L14.5 16.1917L7.73335 22.9584Z" fill="#1D1B20"/>
+                </svg>
+            </button>
+            <form id="registerForm">
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="example@gmail.com" autocomplete="email" name="email" />
+                <label for="password">Password</label>
+                <input type="password" id="password" autocomplete="current-password" name="password"/>
+                <button type="submit" class="register-btn">Register</button>
+            </form>
+            <p class="or-text">OR</p>
     <button type="button" class="google-btn">
         <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g clip-path="url(#clip0_44_177)">
@@ -221,33 +216,92 @@
         </svg>
      Continue with Google
     </button>
-    <p class="login-text">
-     Already Have Account?
-     <a href="#">Login Now</a>
+    <p class="login-register-text">
+        Already Have Account?
+        <a href="#loginModal" id="switchToLogin">Login Now</a>
     </p>
    </div>
   </div>
 
+  <!-- Login Modal -->
+  <div id="loginModal" role="dialog" aria-modal="true" aria-labelledby="login-modal-title" style="display: none;">
+        <div id="modal-content">
+            <h1 id="modal-title">Login</h1>
+            <button aria-label="Close" id="closeLoginBtn" class="close-btn">
+                <svg width="29" height="29" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7.73335 22.9584L6.04169 21.2667L12.8084 14.5L6.04169 7.73335L7.73335 6.04169L14.5 12.8084L21.2667 6.04169L22.9584 7.73335L16.1917 14.5L22.9584 21.2667L21.2667 22.9584L14.5 16.1917L7.73335 22.9584Z" fill="#1D1B20"/>
+                </svg>
+            </button>
+            <form id="loginForm">
+                <label for="loginEmail">Email</label>
+                <input type="email" id="loginEmail" placeholder="example@gmail.com" autocomplete="email" name="email" />
+                <label for="loginPassword">Password</label>
+                <input type="password" id="loginPassword" autocomplete="current-password" name="password"/>
+                <button type="submit" class="login-btn">Login</button>
+            </form>
+            <p class="or-text">OR</p>
+            <button type="button" class="google-btn">
+              <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <g clip-path="url(#clip0_44_177)">
+                      <path d="M14.9998 12.2727V18.0818H23.0725C22.718 19.95 21.6542 21.5319 20.0588 22.5955L24.9269 26.3728C27.7633 23.7547 29.3997 19.9092 29.3997 15.341C29.3997 14.2774 29.3042 13.2546 29.1269 12.2729L14.9998 12.2727Z" fill="#4285F4"/>
+                      <path d="M6.59333 17.855L5.49538 18.6955L1.60895 21.7227C4.07712 26.6181 9.13584 30 14.9994 30C19.0493 30 22.4447 28.6636 24.9266 26.3727L20.0585 22.5954C18.7221 23.4954 17.0175 24.0409 14.9994 24.0409C11.0995 24.0409 7.78591 21.4091 6.59946 17.8636L6.59333 17.855Z" fill="#34A853"/>
+                      <path d="M1.60897 8.27722C0.586302 10.2953 0 12.5726 0 14.9999C0 17.4271 0.586302 19.7044 1.60897 21.7225C1.60897 21.736 6.59997 17.8498 6.59997 17.8498C6.29997 16.9498 6.12265 15.9953 6.12265 14.9997C6.12265 14.0041 6.29997 13.0496 6.59997 12.1496L1.60897 8.27722Z" fill="#FBBC05"/>
+                      <path d="M14.9997 5.97272C17.2089 5.97272 19.1725 6.73634 20.7406 8.20909L25.0361 3.91369C22.4315 1.48646 19.0498 0 14.9997 0C9.13615 0 4.07712 3.36818 1.60895 8.27728L6.59979 12.15C7.78608 8.60452 11.0998 5.97272 14.9997 5.97272Z" fill="#EA4335"/>
+                  </g>
+                  <defs>
+                      <clipPath id="clip0_44_177">
+                          <rect width="30" height="30" fill="white"/>
+                      </clipPath>
+                  </defs>
+              </svg>
+            Continue with Google
+            </button>
+            <p class="login-register-text">
+                Don't Have an Account?
+                <a href="#registerModal" id="switchToRegister">Register Now</a>
+            </p>
+        </div>
+    </div>
+
+
   <script>
-    const openModalBtn = document.getElementById("openModalBtn");
-    const modal = document.getElementById("modal");
-    const overlay = document.getElementById("overlay");
-    const closeBtn = document.getElementById("closeBtn");
+        const openModalBtn = document.getElementById("openModalBtn");
+        const modal = document.getElementById("registerModal");
+        const overlay = document.getElementById("overlay");
+        const closeBtn = document.getElementById("closeBtn");
+        const switchToLogin = document.getElementById("switchToLogin");
+        const loginModal = document.getElementById("loginModal");
+        const closeLoginBtn = document.getElementById("closeLoginBtn");
 
-    openModalBtn.addEventListener("click", () => {
-      modal.style.display = "flex";
-      overlay.style.display = "block";
-    });
+        openModalBtn.addEventListener("click", () => {
+            modal.style.display = "flex";
+            overlay.style.display = "block";
+        });
 
-    closeBtn.addEventListener("click", () => {
-      modal.style.display = "none";
-      overlay.style.display = "none";
-    });
-
-    overlay.addEventListener("click", () => {
-      modal.style.display = "none";
-      overlay.style.display = "none";
-    });
+        closeBtn.addEventListener("click", () => {
+            modal.style.display = "none";
+            overlay.style.display = "none";
+        });
+        
+        overlay.addEventListener("click", () => {
+            modal.style.display = "none";
+            loginModal.style.display = "none";
+            overlay.style.display = "none";
+        });
+        switchToLogin.addEventListener("click", (e) => {
+            e.preventDefault();
+            modal.style.display = "none";
+            loginModal.style.display = "flex";
+        });
+        closeLoginBtn.addEventListener("click", () => {
+            loginModal.style.display = "none";
+            overlay.style.display = "none";
+        });
+        document.getElementById("switchToRegister").addEventListener("click", (e) => {
+            e.preventDefault();
+            loginModal.style.display = "none";
+            modal.style.display = "flex";
+        });
   </script>
  </body>
 </html>>
