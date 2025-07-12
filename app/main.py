@@ -5,10 +5,11 @@ import os
 from database import db, resume_ops, user_ops
 import uuid
 
-template_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), r'E:\ResumeParser.ai\frontend\templates'))
-static_path = os.path.abspath(os.path.join(os.path.dirname(__file__), r'E:\ResumeParser.ai\frontend\static'))
+base_path = os.path.abspath(os.path.dirname(__file__))
+template_path = os.path.join(base_path, 'frontend', 'templates')
+static_path = os.path.join(base_path, 'frontend', 'static')
 
-app = Flask(__name__, template_folder=template_dir, static_folder=static_path)
+app = Flask(__name__, template_folder=template_path, static_folder=static_path)
 # UPLOAD_FOLDER = 'uploads'
 # app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -19,11 +20,14 @@ app = Flask(__name__, template_folder=template_dir, static_folder=static_path)
 def home():
     return render_template("home.html")
 
-@app.route('/register')
+@app.route('/register', methods=['GET', 'POST'])
 def register():
-    email = request.get('email')
-    password = request.get('password')
-    user_ops.register_user(email, password)
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        user_ops.register_user(email, password)
+        return render_template('home.html')
+    return render_template('home.html')
 
 @app.route('/login')
 def login():
@@ -90,6 +94,14 @@ def login():
 #         return jsonify({"error": "Invalid filetype"}), 400
 
 #     return send_file(path, as_attachment=True)
+
+@app.route('/terms-and-conditions')
+def terms():
+    return render_template('Terms&Condition.html')
+
+@app.route('/privacy-policy')
+def privacy():
+    return render_template('PrivacyPolicy.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

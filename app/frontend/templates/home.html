@@ -15,7 +15,7 @@
     href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap"
     rel="stylesheet"
   />
-  <link href="/frontend/static/styles.css" rel="stylesheet" />
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
  </head>
  <body>
   <!-- Header -->
@@ -135,7 +135,7 @@
   <section class="how-it-works" id="how-it-works">
    <h2>HOW IT WORKS?</h2>
    <div class="how-it-works-content">
-    <img src="/frontend/static/Working.png" alt="Working of ResumeParser.ai" />
+    <img src="{{ url_for('static', filename='Working.png') }}" alt="Working of ResumeParser.ai" />
    </div>
   </section>
 
@@ -170,11 +170,11 @@
     </div>
     <p>"Parse and analyze resumes effortlessly with AI."</p>
     <p>
-     <a href="/frontend/templates/Terms&Condition.html" target="_blank"
+     <a href="{{ url_for('privacy') }}" target="_blank"
        >Privacy Policy</a
      >
      |
-     <a href="/frontend/templates/PrivacyPolicy.html" target="_blank">Terms of Service</a>
+     <a href="{{ url_for('terms') }}" target="_blank">Terms of Service</a>
     </p>
     <p>© 2025 Resume Parser. All rights reserved.</p>
    </div>
@@ -192,7 +192,7 @@
                     <path d="M7.73335 22.9584L6.04169 21.2667L12.8084 14.5L6.04169 7.73335L7.73335 6.04169L14.5 12.8084L21.2667 6.04169L22.9584 7.73335L16.1917 14.5L22.9584 21.2667L21.2667 22.9584L14.5 16.1917L7.73335 22.9584Z" fill="#1D1B20"/>
                 </svg>
             </button>
-            <form id="registerForm">
+            <form id="registerForm" method="POST" action="/login">
                 <label for="email">Email</label>
                 <input type="email" id="email" placeholder="example@gmail.com" autocomplete="email" name="email" />
                 <label for="password">Password</label>
@@ -232,11 +232,11 @@
                     <path d="M7.73335 22.9584L6.04169 21.2667L12.8084 14.5L6.04169 7.73335L7.73335 6.04169L14.5 12.8084L21.2667 6.04169L22.9584 7.73335L16.1917 14.5L22.9584 21.2667L21.2667 22.9584L14.5 16.1917L7.73335 22.9584Z" fill="#1D1B20"/>
                 </svg>
             </button>
-            <form id="loginForm">
+            <form id="loginForm" method="POST" action="/register">
                 <label for="loginEmail">Email</label>
-                <input type="email" id="loginEmail" placeholder="example@gmail.com" autocomplete="email" name="email" />
+                <input type="email" id="loginEmail" placeholder="example@gmail.com" autocomplete="email" name="loginEmail" />
                 <label for="loginPassword">Password</label>
-                <input type="password" id="loginPassword" autocomplete="current-password" name="password"/>
+                <input type="password" id="loginPassword" autocomplete="current-password" name="loginPassword"/>
                 <button type="submit" class="login-btn">Login</button>
             </form>
             <p class="or-text">OR</p>
@@ -288,20 +288,33 @@
             loginModal.style.display = "none";
             overlay.style.display = "none";
         });
+
         switchToLogin.addEventListener("click", (e) => {
             e.preventDefault();
             modal.style.display = "none";
             loginModal.style.display = "flex";
         });
+
         closeLoginBtn.addEventListener("click", () => {
             loginModal.style.display = "none";
             overlay.style.display = "none";
         });
+
         document.getElementById("switchToRegister").addEventListener("click", (e) => {
             e.preventDefault();
             loginModal.style.display = "none";
             modal.style.display = "flex";
         });
-  </script>
+
+        document.getElementById("registerForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+            fetch(this.action, {
+                method: 'POST',
+                body: new FormData(this)
+            }).then(response => {
+                window.location.href = '/home';
+            });
+        });
+    </script>
  </body>
 </html>>
