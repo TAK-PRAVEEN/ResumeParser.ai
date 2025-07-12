@@ -1,5 +1,7 @@
 import pandas as pd
 import csv
+import docx2txt
+import PyPDF2
 import json
 import re
 import nltk 
@@ -53,9 +55,26 @@ SECTION_KEYWORDS = {
     ]
 }
 
-def data_ingestion(file):
-    with open("Resume.txt", "r", encoding="utf-8") as file:
-        content = file.read()
+def data_ingestion(file_path):
+    ext = os.path.splitext(file_path)[-1].lower()
+
+    if ext == ".txt":
+        with open(file_path, "r", encoding="utf-8") as f:
+            content = f.read()
+
+    elif ext == ".pdf":
+        content = ""
+        with open(file_path, "rb") as f:
+            reader = PyPDF2.PdfReader(f)
+            for page in reader.pages:
+                content += page.extract_text() or ""
+
+    elif ext == ".docx":
+        content = docx2txt.process(file_path)
+
+    else:
+        raise ValueError("Unsupported file format. Please upload .pdf, .docx, or .txt")
+
     return content
 
 def preprocess(content):
