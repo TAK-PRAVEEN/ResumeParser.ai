@@ -22,21 +22,28 @@ def home():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-        user_ops.register_user(email, password)
+    if request.method == 'GET':
         return render_template('home.html')
-    return render_template('home.html')
-
-@app.route('/login')
-def login():
-    email = request.get('email')
-    password = request.get('password')
-    if user_ops.validate_login(email, password):
-        return True
     else:
-        return False, "Invalid Email/Password!"
+        email = request.get.form('email')
+        password = request.get.form('password')
+        user_ops.register_user(email, password)
+    
+@app.route('/parsing')
+def parsing():
+    return render_template('parsing.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'GET':
+        return render_template('home.html')
+    else:
+        email = request.get.form('email')
+        password = request.get.form('password')
+        if user_ops.register_user(email, password):
+            return True
+        else:
+            return "Invalid Email/Password"
 
 # @app.route('/upload', methods=['POST'])
 # def upload_resume():

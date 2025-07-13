@@ -192,7 +192,7 @@
                     <path d="M7.73335 22.9584L6.04169 21.2667L12.8084 14.5L6.04169 7.73335L7.73335 6.04169L14.5 12.8084L21.2667 6.04169L22.9584 7.73335L16.1917 14.5L22.9584 21.2667L21.2667 22.9584L14.5 16.1917L7.73335 22.9584Z" fill="#1D1B20"/>
                 </svg>
             </button>
-            <form id="registerForm" method="POST" action="/login">
+            <form id="registerForm" method="post" action="{{url_for('login')}}">
                 <label for="email">Email</label>
                 <input type="email" id="email" placeholder="example@gmail.com" autocomplete="email" name="email" />
                 <label for="password">Password</label>
@@ -232,7 +232,7 @@
                     <path d="M7.73335 22.9584L6.04169 21.2667L12.8084 14.5L6.04169 7.73335L7.73335 6.04169L14.5 12.8084L21.2667 6.04169L22.9584 7.73335L16.1917 14.5L22.9584 21.2667L21.2667 22.9584L14.5 16.1917L7.73335 22.9584Z" fill="#1D1B20"/>
                 </svg>
             </button>
-            <form id="loginForm" method="POST" action="/register">
+            <form id="loginForm" method="post" action="{{url_for('parsing')}}">
                 <label for="loginEmail">Email</label>
                 <input type="email" id="loginEmail" placeholder="example@gmail.com" autocomplete="email" name="loginEmail" />
                 <label for="loginPassword">Password</label>
@@ -312,7 +312,7 @@
                 method: 'POST',
                 body: new FormData(this)
             }).then(response => {
-                window.location.href = '/home';
+                window.location.href = '/login';
             });
         });
     </script>
