@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, send_file, render_template
+from flask import Flask, request, jsonify, send_file, render_template, flash, redirect, session, url_for
 from werkzeug.utils import secure_filename
 import os
 # import parser
@@ -10,6 +10,7 @@ template_path = os.path.join(base_path, 'frontend', 'templates')
 static_path = os.path.join(base_path, 'frontend', 'static')
 
 app = Flask(__name__, template_folder=template_path, static_folder=static_path)
+app.secret_key = "account123456789"
 # UPLOAD_FOLDER = 'uploads'
 # app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -20,18 +21,43 @@ app = Flask(__name__, template_folder=template_path, static_folder=static_path)
 def home():
     return render_template("home.html")
 
-@app.route('/register', methods=['GET', 'POST'])
+@app.route("/register", methods=["GET", "POST"])
 def register():
-    if request.method == 'GET':
-        return render_template('home.html')
-    else:
-        email = request.get.form('email')
-        password = request.get.form('password')
+    if request.method == "POST":
+        email = request.form.get("email")
+        password = request.form.get("password")
+
+        # First check if user already exists
+        existing_user = user_ops.get_user_by_email(email)
+        print(f"Checking for existing user: {email}")  # Debugging line
+
+        if existing_user:
+            return render_template("register.html", email_error="Email already exists. Please try logging in.")
+
+        # Then register if new user
         user_ops.register_user(email, password)
+        # flash("Registered successfully! Please login.", "success")
+        return redirect(url_for("login"))
+
+    return render_template("register.html")
+
+@app.route('/check_email', methods=['POST'])
+def check_email():
+    email = request.form.get('email')
+    existing_user = user_ops.get_user_by_email(email)
     
-@app.route('/parsing')
+    if existing_user:
+        return jsonify({'exists': True}), 200
+    return jsonify({'exists': False}), 200
+
+    
+@app.route("/parsing", methods=["GET", "POST"])
 def parsing():
-    return render_template('parsing.html')
+    if request.method == "POST":
+        # your code to parse and save to MongoDB
+        return "Parsed and saved!"
+    else:
+        return render_template("parsing.html")
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

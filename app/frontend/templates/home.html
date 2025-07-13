@@ -183,6 +183,17 @@
   <!-- Modal Overlay -->
   <div id="overlay"></div>
 
+   <!-- Flash Messages (other messages) -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
   <!-- Register Modal -->
     <div id="registerModal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
         <div id="modal-content">
@@ -192,9 +203,13 @@
                     <path d="M7.73335 22.9584L6.04169 21.2667L12.8084 14.5L6.04169 7.73335L7.73335 6.04169L14.5 12.8084L21.2667 6.04169L22.9584 7.73335L16.1917 14.5L22.9584 21.2667L21.2667 22.9584L14.5 16.1917L7.73335 22.9584Z" fill="#1D1B20"/>
                 </svg>
             </button>
-            <form id="registerForm" method="post" action="{{url_for('login')}}">
+            <form id="registerForm" method="POST" onsubmit="return validateRegistration()">
                 <label for="email">Email</label>
-                <input type="email" id="email" placeholder="example@gmail.com" autocomplete="email" name="email" />
+                <input type="email" id="email" name="email" required onblur="checkEmailOnBlur()">
+                {% if email_error %}
+                  <div class="error-message">{{ email_error }}</div>
+                {% endif %}
+                <div id="emailError" class="error-message" style="display: none;"></div>
                 <label for="password">Password</label>
                 <input type="password" id="password" autocomplete="current-password" name="password"/>
                 <button type="submit" class="register-btn">Register</button>
@@ -263,7 +278,7 @@
         </div>
     </div>
 
-
+ </body>
   <script>
         const openModalBtn = document.getElementById("openModalBtn");
         const modal = document.getElementById("registerModal");
@@ -312,9 +327,57 @@
                 method: 'POST',
                 body: new FormData(this)
             }).then(response => {
-                window.location.href = '/login';
+                window.location.href = "parsing";
             });
         });
+        async function validateRegistration(event) {
+            event.preventDefault();
+            const email = document.getElementById('email').value;
+            const emailError = document.getElementById('emailError');
+            
+            // Check if the email exists
+            const exists = await emailExists(email);
+            
+            if (exists) { 
+                emailError.textContent = "Email already exists. Please try logging in.";
+                emailError.style.display = 'block';
+                return false; // Prevent form submission
+            }
+            
+            emailError.style.display = 'none'; // Hide error if email is valid
+            if (!exists) {
+                document.getElementById('registerForm').submit();
+            }
+            return false; // Allow form submission
+        }
+
+        function emailExists(email) {
+            return fetch('/check_email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email: email })
+            })
+            .then(response => response.json())
+            .then(data => {
+                return data.exists; // Returns true if the email exists, false otherwise
+            });
+        }
+
+        async function checkEmailOnBlur() {
+            const email = document.getElementById('email').value;
+            if (email) {
+                const exists = await emailExists(email);
+                const emailError = document.getElementById('emailError');
+                if (exists) {
+                    emailError.textContent = "Email already exists. Please try logging in.";
+                    emailError.style.display = 'block';
+                } else {
+                    emailError.style.display = 'none';
+                }
+            }
+        }
+
     </script>
- </body>
-</html>>
+</html>

@@ -3,9 +3,13 @@ import bcrypt
 
 users = db["users"]
 
-def register_user(email, password):
+def get_user_by_email(email):
     if users.find_one({"email": email}):
-        return False, "Email already exists"
+        return True, "Email already exists"
+    else:
+        return False
+
+def register_user(email, password):
     hashed = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
     users.insert_one({"email": email, "password": hashed})
     return True, "User registered"
