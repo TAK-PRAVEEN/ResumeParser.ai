@@ -25,21 +25,22 @@ def home():
 def register():
     if request.method == "POST":
         email = request.form.get("email")
-        password = request.form.get("password")
+        
 
         # First check if user already exists
         existing_user = user_ops.get_user_by_email(email)
-        print(f"Checking for existing user: {email}")  # Debugging line
+        # print(f"Checking for existing user: {email}")  # Debugging line
 
         if existing_user:
-            return render_template("register.html", email_error="Email already exists. Please try logging in.")
+            return render_template("home.html", email_error="Email already exists. Please try logging in.")
 
         # Then register if new user
+        password = request.form.get("password")
         user_ops.register_user(email, password)
         # flash("Registered successfully! Please login.", "success")
         return redirect(url_for("login"))
 
-    return render_template("register.html")
+    return render_template("home.html")
 
 @app.route('/check_email', methods=['POST'])
 def check_email():
