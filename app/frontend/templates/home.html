@@ -379,5 +379,27 @@
             }
         }
 
+        async function validateRegistration(event) {
+            event.preventDefault();
+            const email = document.getElementById('email').value;
+            const emailError = document.getElementById('emailError');
+            
+            // Check if the email exists
+            const exists = await emailExists(email);
+            
+            if (exists) { 
+                emailError.textContent = "Email already exists. Please try logging in.";
+                emailError.style.display = 'block';
+                return false; // Prevent form submission
+            }
+            
+            emailError.style.display = 'none'; // Hide error if email is valid
+            if (!exists) {
+                document.getElementById('registerForm').submit();
+            }
+            return false; // Allow form submission
+        }
+
+
     </script>
 </html>
