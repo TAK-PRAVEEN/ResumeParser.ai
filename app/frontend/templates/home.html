@@ -205,13 +205,13 @@
             </button>
             <form id="registerForm" method="POST" onsubmit="return validateRegistration()">
                 <label for="email">Email</label>
-                <input type="email" id="email" name="email" required onblur="checkEmailOnBlur()">
+                <input type="email" id="email" name="register-email" required onblur="checkEmailOnBlur()">
                 {% if email_error %}
                   <div class="error-message">{{ email_error }}</div>
                 {% endif %}
                 <div id="emailError" class="error-message" style="display: none;"></div>
                 <label for="password">Password</label>
-                <input type="password" id="password" autocomplete="current-password" name="password"/>
+                <input type="password" id="password" autocomplete="current-password" name="register-password"/>
                 <button type="submit" class="register-btn" id="registerBtn" disabled>Register</button>
             </form>
             <p class="or-text">OR</p>

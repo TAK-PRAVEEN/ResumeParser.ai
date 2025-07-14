@@ -160,17 +160,18 @@ def home():
 
 @app.route('/register', methods=['POST'])
 def register():
-    data = request.get_json()
-    email = data.get('email')
+    # data = request.get_json()  # Get JSON data from the request
+    email = request.form.get('register-email')  # Extract email from the JSON data
 
     # Check if the email already exists
     if user_ops.get_user_by_email(email):
         return jsonify({'msg': 'Email already exists. Please try logging in.'}), 409
 
-    password = data.get('password')
+    password = request.form.get('register-password')  # Extract password from the JSON data
     # If not exists, create a new user
     user_ops.register_user(email, password)
     return jsonify({'msg': 'User  created successfully'}), 201
+
 
 @app.route('/check_email', methods=['POST'])
 def check_email():
