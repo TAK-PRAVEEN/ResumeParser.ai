@@ -143,11 +143,9 @@
 #     app.run(debug=True)
 
 
-from flask import Flask, request, jsonify, send_file, render_template, flash, redirect, session, url_for
-from werkzeug.utils import secure_filename
+from flask import Flask, request, jsonify, render_template, flash, redirect, session, url_for
+from database import db, user_ops
 import os
-from database import db, resume_ops, user_ops
-import uuid
 
 base_path = os.path.abspath(os.path.dirname(__file__))
 template_path = os.path.join(base_path, 'frontend', 'templates')
@@ -160,35 +158,26 @@ app.secret_key = "account123456789"
 def home():
     return render_template("home.html")
 
-@app.route("/register", methods=["GET", "POST"])
+@app.route('/register', methods=['POST'])
 def register():
-    if request.method == "POST":
-        email = request.form.get("email")
+    data = request.get_json()
+    email = data.get('email')
 
-        # First check if user already exists
-        existing_user = user_ops.get_user_by_email(email)
+    # Check if the email already exists
+    if user_ops.get_user_by_email(email):
+        return jsonify({'msg': 'Email already exists. Please try logging in.'}), 409
 
-        if existing_user:
-            flash("Email already exists. Please try logging in.", "error")
-            return redirect(url_for("home"))
-
-        # Then register if new user
-        password = request.form.get("password")
-        user_ops.register_user(email, password)
-        flash("Registered successfully! Please login.", "success")
-        return redirect(url_for("login"))
-
-    return render_template("home.html")
+    password = data.get('password')
+    # If not exists, create a new user
+    user_ops.register_user(email, password)
+    return jsonify({'msg': 'User  created successfully'}), 201
 
 @app.route('/check_email', methods=['POST'])
 def check_email():
-    data = request.get_json()  # Get JSON data
+    data = request.get_json()
     email = data.get('email')
     existing_user = user_ops.get_user_by_email(email)
-    
-    if existing_user:
-        return jsonify({'exists': True}), 200
-    return jsonify({'exists': False}), 200
+    return jsonify({'exists': existing_user})
 
 @app.route("/parsing", methods=["GET", "POST"])
 def parsing():
@@ -204,7 +193,7 @@ def login():
         email = request.form.get('email')
         password = request.form.get('password')
         
-        if user_ops.validate_login(email, password):  # Assuming you have a validate_user function
+        if user_ops.validate_login(email, password):
             session['user_email'] = email  # Store user email in session
             return redirect(url_for("parsing"))  # Redirect to parsing page
         else:

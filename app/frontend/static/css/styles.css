@@ -366,7 +366,7 @@ body {
       font-size: 0.875rem;
       color: black;
       outline-offset: 2px;
-      margin-bottom: 19px;
+      /* margin-bottom: 19px; */
     }
     .flash-messages {
     margin: 20px;

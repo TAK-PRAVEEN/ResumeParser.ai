@@ -212,7 +212,7 @@
                 <div id="emailError" class="error-message" style="display: none;"></div>
                 <label for="password">Password</label>
                 <input type="password" id="password" autocomplete="current-password" name="password"/>
-                <button type="submit" class="register-btn">Register</button>
+                <button type="submit" class="register-btn" id="registerBtn" disabled>Register</button>
             </form>
             <p class="or-text">OR</p>
     <button type="button" class="google-btn">
@@ -330,27 +330,7 @@
                 window.location.href = "parsing";
             });
         });
-        async function validateRegistration(event) {
-            event.preventDefault();
-            const email = document.getElementById('email').value;
-            const emailError = document.getElementById('emailError');
-            
-            // Check if the email exists
-            const exists = await emailExists(email);
-            
-            if (exists) { 
-                emailError.textContent = "Email already exists. Please try logging in.";
-                emailError.style.display = 'block';
-                return false; // Prevent form submission
-            }
-            
-            emailError.style.display = 'none'; // Hide error if email is valid
-            if (!exists) {
-                document.getElementById('registerForm').submit();
-            }
-            return false; // Allow form submission
-        }
-
+    
         function emailExists(email) {
             return fetch('/check_email', {
                 method: 'POST',
@@ -365,40 +345,70 @@
             });
         }
 
-        async function checkEmailOnBlur() {
-            const email = document.getElementById('email').value;
-            if (email) {
-                const exists = await emailExists(email);
-                const emailError = document.getElementById('emailError');
-                if (exists) {
-                    emailError.textContent = "Email already exists. Please try logging in.";
-                    emailError.style.display = 'block';
-                } else {
-                    emailError.style.display = 'none';
-                }
-            }
-        }
+        // Global variable to track current email validation state
+        let currentEmailValid = false;
 
         async function validateRegistration(event) {
             event.preventDefault();
             const email = document.getElementById('email').value;
-            const emailError = document.getElementById('emailError');
+            const password = document.getElementById('password').value;
             
-            // Check if the email exists
-            const exists = await emailExists(email);
-            
-            if (exists) { 
-                emailError.textContent = "Email already exists. Please try logging in.";
-                emailError.style.display = 'block';
-                return false; // Prevent form submission
+            // Don't proceed if email isn't valid
+            if (!currentEmailValid) {
+                return false;
             }
-            
-            emailError.style.display = 'none'; // Hide error if email is valid
-            if (!exists) {
-                document.getElementById('registerForm').submit();
-            }
-            return false; // Allow form submission
+
+            // Submit form if email is valid
+            document.getElementById('registerForm').submit();
         }
+
+        async function checkEmailOnBlur() {
+            const email = document.getElementById('email').value;
+            const emailError = document.getElementById('emailError');
+            const registerBtn = document.getElementById('registerBtn');
+            
+            // Reset state
+            emailError.style.display = 'none';
+            registerBtn.disabled = true;
+            
+            // Only check if email is not empty
+            if (email) {
+                try {
+                    // Show loading state
+                    registerBtn.textContent = "Checking...";
+                    
+                    const exists = await emailExists(email);
+                    
+                    if (exists) {
+                        emailError.textContent = "Email already exists. Please try logging in.";
+                        emailError.style.display = 'block';
+                        currentEmailValid = false;
+                    } else {
+                        currentEmailValid = true;
+                        registerBtn.disabled = false;
+                    }
+                } catch (error) {
+                    console.error("Error checking email:", error);
+                    emailError.textContent = "Error checking email availability";
+                    emailError.style.display = 'block';
+                    currentEmailValid = false;
+                } finally {
+                    registerBtn.textContent = "Register";
+                }
+            }
+        }
+
+        // Add event listener to enable button when email changes
+        document.getElementById('email').addEventListener('input', function() {
+            // Clear any existing error when user types
+            document.getElementById('emailError').style.display = 'none';
+            
+            // Enable button if there's text (actual validation happens on blur)
+            const registerBtn = document.getElementById('registerBtn');
+            registerBtn.disabled = this.value.length === 0;
+        });
+
+
 
 
     </script>
