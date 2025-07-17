@@ -31,8 +31,8 @@ def get_user_by_email(email):
 
 def register_user(email, password):
     hashed = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
-    users.insert_one({"email": email, "password": hashed})
-    return True  # You can return a message if needed
+    result = users.insert_one({"email": email, "password": hashed})
+    return result.inserted_id, "Successful insertion"  # You can return a message if needed
 
 def validate_login(email, password):
     user = users.find_one({"email": email})
