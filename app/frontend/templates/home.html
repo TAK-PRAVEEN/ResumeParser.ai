@@ -184,16 +184,13 @@
   <div id="overlay"></div>
 
    <!-- Flash Messages (other messages) -->
-  <!-- {% with messages = get_flashed_messages(with_categories=true) %}
+  {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
-            <div class="flash-messages">
-                {% for category, message in messages %}
-                    <div class="flash {{ category }}">{{ message }}</div>
-                {% endfor %}
-            </div>
+            {% for category, message in messages %}
+                <div class="alert {{ category }}">{{ message }}</div>
+            {% endfor %}
         {% endif %}
-    {% endwith %} -->
-
+    {% endwith %}
   <!-- Register Modal -->
     <div id="registerModal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
         <div id="modal-content">
@@ -246,7 +243,7 @@
                     <path d="M7.73335 22.9584L6.04169 21.2667L12.8084 14.5L6.04169 7.73335L7.73335 6.04169L14.5 12.8084L21.2667 6.04169L22.9584 7.73335L16.1917 14.5L22.9584 21.2667L21.2667 22.9584L14.5 16.1917L7.73335 22.9584Z" fill="#1D1B20"/>
                 </svg>
             </button>
-            <form id="loginForm" method="post" action="{{url_for('login')}}">
+            <form id="loginForm" method="post" action="{{ url_for('login') }}">
                 <label for="loginEmail">Email</label>
                 <input type="email" id="loginEmail" placeholder="example@gmail.com" autocomplete="email" name="login-email" required />
                 
@@ -257,6 +254,7 @@
                 
                 <button type="submit" class="login-btn" id="loginBtn" disabled>Login</button>  <!-- Disable button initially -->
             </form>
+
 
             <p class="or-text">OR</p>
             <button type="button" class="google-btn">
@@ -441,18 +439,6 @@
             }
         });
 
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            
-            if (!email || !password) {
-                e.preventDefault();
-                alert('Please enter both email and password');
-                return false;
-            }
-            return true;
-        });
-
         // Add event listener to enable button when email or password changes
         document.getElementById('loginEmail').addEventListener('input', toggleLoginButton);
         document.getElementById('loginPassword').addEventListener('input', toggleLoginButton);
@@ -502,10 +488,8 @@
                 const loginError = document.getElementById('loginError');
                 loginError.textContent = result.msg;  // Show error message
                 loginError.style.display = 'block';  // Make it visible
-                // Do not disable the button, allow the user to try again
             }
         });
-
 
 
 

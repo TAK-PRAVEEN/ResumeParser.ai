@@ -34,18 +34,14 @@ def login():
     
     # Validate input
     if not email or not password:
-        flash('Please enter both email and password', 'error')
-        return redirect(url_for('home'))
+        return jsonify({'msg': 'Missing form fields'}), 400
     
     # Check credentials
     if user_ops.validate_login(email, password):
-        # Success - store user in session and redirect
-        flash('Logged in successfully!', 'success')
-        return render_template('parsing.html')
-    else:
-        # Failed login
-        error_message = 'Invalid Email/Password'
-        return render_template('home.html', login_error=error_message)  # Pass error message to template
+        session['user_email'] = email  # Store user email in session
+        return jsonify({'msg': 'Login Successful'}), 200  # Use 200 for success
+    
+    return jsonify({'msg': 'Invalid Email/Password'}), 401  # Use 401 for unauthorized
 
 
 @app.route('/check_email', methods=['POST'])
