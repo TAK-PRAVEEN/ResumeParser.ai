@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify, render_template, flash, redirect, session, url_for
-from database import db, user_ops
+from database import db, user_ops, resume_ops
+import parser.ResumeParser
 import os
 
 base_path = os.path.abspath(os.path.dirname(__file__))
@@ -18,8 +19,8 @@ def register():
     email = request.form.get('register-email')  # Must match input name
     password = request.form.get('register-password')  # Must match input name
 
-    if not email or not password:
-        return jsonify({'msg': 'Missing form fields'}), 400  # Add this for safety
+    # if not email or not password:
+    #     return jsonify({'msg': 'Missing form fields'}), 400  # Add this for safety
 
     if user_ops.get_user_by_email(email):
         return jsonify({'msg': 'Email already exists'}), 409
@@ -54,6 +55,7 @@ def check_email():
 @app.route("/parsing", methods=["GET", "POST"])
 def parsing():
     if request.method == "POST":
+
         # your code to parse and save to MongoDB
         return "Parsed and saved!"
     else:
