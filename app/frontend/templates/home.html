@@ -60,7 +60,7 @@
      />
     </svg>
     <h3>AI-Powered Parsing</h3>
-    <p>Automatically extracts names, skills, experience, education, and much more</p>
+    <p>Automatically extracts experience, education, and much more</p>
    </div>
    <div class="feature-card multi-format">
     <svg
@@ -192,7 +192,7 @@
         {% endif %}
     {% endwith %}
   <!-- Register Modal -->
-    <div id="registerModal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div id="registerModal" role="dialog" aria-modal="true" aria-labelledby="modal-title" style="display: none;">
         <div id="modal-content">
             <h1 id="modal-title">Register</h1>
             <button aria-label="Close" id="closeBtn" class="close-btn">
@@ -202,7 +202,7 @@
             </button>
             <form action="{{ url_for('register') }}" id="registerForm" method="POST" onsubmit="return validateRegistration()">
                 <label for="email">Email</label>
-                <input type="email" id="email" name="register-email" required onblur="checkEmailOnBlur()">
+                <input type="email" id="email" name="register-email" placeholder="example@gmail.com" required onblur="checkEmailOnBlur()">
                 {% if email_error %}
                   <div class="error-message">{{ email_error }}</div>
                 {% endif %}
@@ -439,7 +439,7 @@
             }
         });
 
-        // Add event listener to enable button when email or password changes
+        /// Add event listener to enable button when email or password changes
         document.getElementById('loginEmail').addEventListener('input', toggleLoginButton);
         document.getElementById('loginPassword').addEventListener('input', toggleLoginButton);
 
@@ -471,11 +471,11 @@
             const response = await fetch(this.action, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/x-www-form-urlencoded',  // Use URL encoded format
                 },
-                body: JSON.stringify({
-                    email: email,
-                    password: password
+                body: new URLSearchParams({
+                    'login-email': email,
+                    'login-password': password
                 }),
             });
 
@@ -490,6 +490,26 @@
                 loginError.style.display = 'block';  // Make it visible
             }
         });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const openModalBtn = document.getElementById("openModalBtn");
+            const modal = document.getElementById("registerModal");
+            const overlay = document.getElementById("overlay");
+            const closeBtn = document.getElementById("closeBtn");
+            // Only show modal when button is clicked
+            openModalBtn.addEventListener("click", function() {
+                modal.style.display = "flex";
+                overlay.style.display = "block";
+            });
+            // Close modal when clicking X or overlay
+            closeBtn.addEventListener("click", closeModal);
+            overlay.addEventListener("click", closeModal);
+            function closeModal() {
+                modal.style.display = "none";
+                overlay.style.display = "none";
+            }
+        });
+
 
 
 

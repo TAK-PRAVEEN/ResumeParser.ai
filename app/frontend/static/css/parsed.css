@@ -1,0 +1,200 @@
+html {
+    scroll-behavior: smooth;
+}
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #fef6e4;
+    color: black;
+    margin: 0;
+    padding: 0;
+}
+/* Fixed background logo */
+body::before {
+  content: "";
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60%;
+  height: 60%;
+  background-image: url('/app/frontend/static/Logo_Resume_Parser_Inverted-removebg-preview.png'); /* Replace with your logo */
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.15;
+  z-index: 0; /* Behind all content */
+  pointer-events: none; /* Allow clicking through it */
+}
+
+/* Header */
+.header {
+  position: sticky;
+  top: 0;
+  background-color: rgba(249, 188, 0, 0.9); /* Slightly transparent */
+  color: #3f3f00;
+  font-weight: 800;
+  text-align: center;
+  padding: 0.05rem 0;
+  user-select: none;
+  border-bottom: 2px solid #4A4901;
+  z-index: 1000; /* Ensure it stays above other content */
+  backdrop-filter: blur(10px); /* Blur effect */
+  -webkit-backdrop-filter: blur(10px); /* Safari support */
+}
+
+.header-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 40px;
+    color: #4A4901;
+    margin-top: 1.25rem;
+    line-height: 1;
+    margin-top: 20;
+}
+.header-title span {
+    font-weight: 800;
+    stroke: gray;
+    stroke-width: 5px;
+}
+.header-subtitle {
+    font-family: 'Poppins', sans-serif;
+    color: #836400;
+    font-size: 20px;
+    line-height: 1;
+    font-weight: 600;
+}
+
+/* Upload Section Styles */
+    .upload-section {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      text-align: center;
+    }
+    
+    .upload-container {
+      background-color: #fff8e1;
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .upload-container h2 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 28px;
+      color: #5D4700;
+      margin-bottom: 0.5rem;
+    }
+    
+    .upload-container p {
+      font-family: 'Inter', sans-serif;
+      color: #836400;
+      margin-bottom: 1.5rem;
+    }
+    
+    .drag-drop-area {
+      border: 2px dashed #9b7a00;
+      border-radius: 15px;
+      padding: 2rem;
+      margin: 2rem 0;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .drag-drop-area:hover {
+      background-color: rgba(251, 191, 36, 0.1);
+    }
+    
+    .drag-drop-area.dragover {
+      background-color: rgba(251, 191, 36, 0.2);
+      border-style: solid;
+    }
+    
+    .drag-drop-area .icon {
+      font-size: 48px;
+      margin-bottom: 1rem;
+      color: #9b7a00;
+    }
+    
+    .drag-drop-area p {
+      font-family: 'Poppins', sans-serif;
+      font-size: 18px;
+      color: #5D4700;
+      margin: 0.5rem 0;
+    }
+    
+    .or-text {
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      margin: 1rem 0;
+    }
+    
+    .browse-btn {
+      background-color: #f9bc00;
+      color: #211900;
+      font-family: 'Poppins', sans-serif;
+      font-size: 16px;
+      padding: 0.5rem 1.5rem;
+      border: 1px solid #211900;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .browse-btn:hover {
+      background-color: #211900;
+      color: #f9bc00;
+    }
+    
+    .parse-btn {
+      background-color: #5D4700;
+      color: white;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 18px;
+      padding: 0.75rem 2rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 1rem;
+      transition: all 0.2s ease;
+      width: 200px;
+    }
+    
+    .parse-btn:not(:disabled):hover {
+      background-color: #836400;
+      transform: translateY(-2px);
+    }
+    
+    .parse-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    
+    /* Logo background */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 60%;
+      height: 60%;
+      background-image:  url('/app/frontend/static/Logo_Resume_Parser_Inverted-removebg-preview.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      opacity: 0.15;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .upload-container {
+        padding: 1.5rem;
+      }
+      
+      .drag-drop-area {
+        padding: 1.5rem;
+      }
+    }

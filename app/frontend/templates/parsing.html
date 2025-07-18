@@ -1,11 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Parsing</title>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1" name="viewport" />
+  <title>ResumeParser.ai - Upload</title>
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    rel="stylesheet"
+  />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&amp;display=swap"
+    rel="stylesheet"
+  />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/parsed.css') }}" />
+  <link rel="stylesheet" href="/app/frontend/static/css/parsed.css">
 </head>
 <body>
-    <p>Welome to Parsing Page</p>
+  <!-- Fixed Header (Same as home page) -->
+  <header class="header">
+   <h1 class="header-title">
+    <span>ResumeParser.ai</span>
+   </h1>
+   <p class="header-subtitle">Parse Resumes in Seconds</p>
+  </header>
+
+  <!-- Upload Section -->
+  <section class="upload-section">
+    <div class="upload-container">
+      <h2>Upload Your Resume</h2>
+      <p>Supported formats: PDF, DOCX, or TXT</p>
+      
+      <div class="drag-drop-area" id="dragDropArea">
+        <div class="icon">
+          <i class="fas fa-file-upload"></i>
+        </div>
+        <p>Drag & drop your resume here</p>
+        <p class="or-text">OR</p>
+        <button class="browse-btn">Browse Files</button>
+        <input type="file" id="fileInput" accept=".pdf,.docx,.txt" style="display: none;">
+      </div>
+      
+      <button class="parse-btn" id="parseBtn" disabled>
+        Start Parsing
+      </button>
+    </div>
+  </section>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const dragDropArea = document.getElementById('dragDropArea');
+      const fileInput = document.getElementById('fileInput');
+      const parseBtn = document.getElementById('parseBtn');
+      
+      let selectedFile = null;
+
+      // Highlight drop area on drag over
+      ['dragenter', 'dragover'].forEach(eventName => {
+        dragDropArea.addEventListener(eventName, highlight, false);
+      });
+
+      ['dragleave', 'drop'].forEach(eventName => {
+        dragDropArea.addEventListener(eventName, unhighlight, false);
+      });
+
+      function highlight(e) {
+        e.preventDefault();
+        dragDropArea.classList.add('dragover');
+      }
+
+      function unhighlight(e) {
+        e.preventDefault();
+        dragDropArea.classList.remove('dragover');
+      }
+
+      // Handle file drop
+      dragDropArea.addEventListener('drop', handleDrop);
+      
+      // Handle file selection via button
+      document.querySelector('.browse-btn').addEventListener('click', () => {
+        fileInput.click();
+      });
+
+      fileInput.addEventListener('change', handleFileSelect);
+
+      function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        handleFiles(files);
+      }
+
+      function handleFileSelect(e) {
+        const files = e.target.files;
+        handleFiles(files);
+      }
+
+      function handleFiles(files) {
+        if (files.length > 0) {
+          selectedFile = files[0];
+          updateUI();
+        }
+      }
+
+      function updateUI() {
+        if (selectedFile) {
+          parseBtn.disabled = false;
+          document.querySelector('.drag-drop-area p').textContent = selectedFile.name;
+        }
+      }
+
+      // Parse button click handler
+      parseBtn.addEventListener('click', function() {
+        if (selectedFile) {
+          // Here you would handle the file parsing
+          console.log('Parsing file:', selectedFile.name);
+          
+          // Disable button and show loading state
+          parseBtn.disabled = true;
+          parseBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Parsing...';
+          
+          // Simulate parsing delay
+          setTimeout(function() {
+            alert('Parsing complete!');
+            parseBtn.disabled = false;
+            parseBtn.textContent = 'Start Parsing';
+          }, 2000);
+        }
+      });
+    });
+  </script>
 </body>
 </html>
