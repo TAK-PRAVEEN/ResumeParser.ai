@@ -51,11 +51,31 @@ def check_email():
 @app.route("/parsing", methods=["GET", "POST"])
 def parsing():
     if request.method == "POST":
+        # Check if a file is part of the request
+        if 'resume' not in request.files:
+            return jsonify({'msg': 'No file part'}), 400
+        
+        file = request.files['resume']
+        
+        # Check if the file is empty
+        if file.filename == '':
+            return jsonify({'msg': 'No selected file'}), 400
+        
+        # Save the file temporarily
+        file_path = os.path.join(static_path, file.filename)
+        file.save(file_path)
 
-        # your code to parse and save to MongoDB
-        return "Parsed and saved!"
+        # Use ResumeParser to parse the resume
+        resume_data = ResumeParser(file_path).section_identification()
+
+        # Optionally, you can delete the file after parsing
+        os.remove(file_path)
+
+        # Return the parsed data as JSON
+        return render_template("parsing.html", resume_data)
     else:
         return render_template("parsing.html")
+
 
 
 @app.route('/terms-and-conditions')

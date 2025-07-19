@@ -4,28 +4,18 @@
   <meta charset="utf-8" />
   <meta content="width=device-width, initial-scale=1" name="viewport" />
   <title>ResumeParser.ai - Upload</title>
-  <link
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
-    rel="stylesheet"
-  />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&amp;display=swap"
-    rel="stylesheet"
-  />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap"
-    rel="stylesheet"
-  />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&amp;display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="{{ url_for('static', filename='css/parsed.css') }}" />
-  <link rel="stylesheet" href="/app/frontend/static/css/parsed.css">
 </head>
 <body>
   <!-- Fixed Header (Same as home page) -->
   <header class="header">
-   <h1 class="header-title">
-    <span>ResumeParser.ai</span>
-   </h1>
-   <p class="header-subtitle">Parse Resumes in Seconds</p>
+    <h1 class="header-title">
+      <span>ResumeParser.ai</span>
+    </h1>
+    <p class="header-subtitle">Parse Resumes in Seconds</p>
   </header>
 
   <!-- Upload Section -->
@@ -34,20 +24,31 @@
       <h2>Upload Your Resume</h2>
       <p>Supported formats: PDF, DOCX, or TXT</p>
       
-      <div class="drag-drop-area" id="dragDropArea">
-        <div class="icon">
-          <i class="fas fa-file-upload"></i>
+      <form id="uploadForm" method="POST" enctype="multipart/form-data">
+        <div class="drag-drop-area" id="dragDropArea">
+          <div class="icon">
+            <i class="fas fa-file-upload"></i>
+          </div>
+          <p>Drag & drop your resume here</p>
+          <p class="or-text">OR</p>
+          <button type="button" class="browse-btn">Browse Files</button>
+          <input type="file" id="fileInput" name="resume" accept=".pdf,.docx,.txt" style="display: none;">
         </div>
-        <p>Drag & drop your resume here</p>
-        <p class="or-text">OR</p>
-        <button class="browse-btn">Browse Files</button>
-        <input type="file" id="fileInput" accept=".pdf,.docx,.txt" style="display: none;">
-      </div>
-      
-      <button class="parse-btn" id="parseBtn" disabled>
-        Start Parsing
-      </button>
+        
+        <button class="parse-btn" id="parseBtn" disabled>
+          Start Parsing
+        </button>
+      </form>
     </div>
+
+    {% if resume_data %}
+      <div class="parsed-data">
+        {% for section, details in resume_data.items() %}
+          <h3>{{ section }}</h3>
+          <p>{{ details }}</p>
+        {% endfor %}
+      </div>
+    {% endif %}
   </section>
 
   <script>
@@ -114,21 +115,27 @@
 
       // Parse button click handler
       parseBtn.addEventListener('click', function() {
-        if (selectedFile) {
-          // Here you would handle the file parsing
-          console.log('Parsing file:', selectedFile.name);
-          
-          // Disable button and show loading state
-          parseBtn.disabled = true;
-          parseBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Parsing...';
-          
-          // Simulate parsing delay
-          setTimeout(function() {
-            alert('Parsing complete!');
-            parseBtn.disabled = false;
-            parseBtn.textContent = 'Start Parsing';
-          }, 2000);
-        }
+        document.getElementById('uploadForm').dispatchEvent(new Event('submit'));
+      });
+
+      document.getElementById('uploadForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent default form submission
+
+        const formData = new FormData(this);
+
+        fetch('/parsing', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log(data); // Handle the parsed data
+          alert('Parsing complete! Check console for details.');
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('An error occurred while parsing the resume.');
+        });
       });
     });
   </script>

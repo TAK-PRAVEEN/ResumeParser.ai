@@ -129,7 +129,7 @@ class ResumeParser:
         sections_index = {}
         previous_section = None
 
-        resume_info = self.extract_resume_info(document)
+        resume_info = self.extract_resume_info()
         sections.update(resume_info)
             
         for num in range(len(tokenized)):
