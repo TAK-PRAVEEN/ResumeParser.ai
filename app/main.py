@@ -55,12 +55,12 @@ def parsing():
     if request.method == "POST":
         if 'resume' not in request.files:
             return jsonify({'msg': 'No file part'}), 400
-        
+           
         file = request.files['resume']
-        
+           
         if file.filename == '':
             return jsonify({'msg': 'No selected file'}), 400
-        
+           
         # Save the file temporarily with a unique name
         unique_filename = f"{uuid.uuid4()}_{file.filename}"
         file_path = os.path.join(static_path, unique_filename)
@@ -68,19 +68,21 @@ def parsing():
 
         # Check if the file is empty
         if os.path.getsize(file_path) == 0:
-            return jsonify({'msg': 'Uploaded file is empty'}), 400
-
+           return jsonify({'msg': 'Uploaded file is empty'}), 400
         # Use ResumeParser to parse the resume
         try:
             resume_data = ResumeParser(file_path).section_identification()
+            print("Parsed Data:", resume_data)  # Debugging line to check the output
         finally:
             # Ensure the file is deleted after processing
             if os.path.exists(file_path):
                 os.remove(file_path)
 
-        return jsonify(resume_data), 200
+        # Render the template with the parsed data
+        return render_template("parsing.html", resume_data=resume_data)
     else:
         return render_template("parsing.html")
+   
 
 
 
