@@ -41,14 +41,17 @@
       </form>
     </div>
 
-    {% if resume_data %}
-      <div class="parsed-data">
-        {% for section, details in resume_data.items() %}
-          <h3>{{ section }}</h3>
-          <p>{{ details }}</p>
-        {% endfor %}
-      </div>
-    {% endif %}
+       {% if resume_data %}
+          <div class="parsed-data">
+              {% for section, details in resume_data.items() %}
+                  <h3>{{ section }}</h3>
+                  <p>{{ details }}</p>
+              {% endfor %}
+          </div>
+      {% else %}
+          <p>No data to display.</p>
+      {% endif %}
+   
   </section>
 
   <script>

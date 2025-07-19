@@ -48,33 +48,40 @@ def check_email():
     existing_user = user_ops.get_user_by_email(email)
     return jsonify({'exists': existing_user})
 
+import uuid
+
 @app.route("/parsing", methods=["GET", "POST"])
 def parsing():
     if request.method == "POST":
-        # Check if a file is part of the request
         if 'resume' not in request.files:
             return jsonify({'msg': 'No file part'}), 400
         
         file = request.files['resume']
         
-        # Check if the file is empty
         if file.filename == '':
             return jsonify({'msg': 'No selected file'}), 400
         
-        # Save the file temporarily
-        file_path = os.path.join(static_path, file.filename)
+        # Save the file temporarily with a unique name
+        unique_filename = f"{uuid.uuid4()}_{file.filename}"
+        file_path = os.path.join(static_path, unique_filename)
         file.save(file_path)
 
+        # Check if the file is empty
+        if os.path.getsize(file_path) == 0:
+            return jsonify({'msg': 'Uploaded file is empty'}), 400
+
         # Use ResumeParser to parse the resume
-        resume_data = ResumeParser(file_path).section_identification()
+        try:
+            resume_data = ResumeParser(file_path).section_identification()
+        finally:
+            # Ensure the file is deleted after processing
+            if os.path.exists(file_path):
+                os.remove(file_path)
 
-        # Optionally, you can delete the file after parsing
-        os.remove(file_path)
-
-        # Return the parsed data as JSON
-        return render_template("parsing.html", resume_data)
+        return jsonify(resume_data), 200
     else:
         return render_template("parsing.html")
+
 
 
 

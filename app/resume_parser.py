@@ -88,37 +88,40 @@ class ResumeParser:
         return tokenized
 
     def extract_resume_info(self):
-        text = self.preprocess()
-        lines = [line.strip() for line in text.splitlines() if line.strip()]
-        
-        # ---------- 1. Extract Phone (10-digit, Indian style) ----------
-        phone = re.findall(r'\b[6-9]\d{9}\b', text)
-        phone = phone[0] if phone else None
+       text = self.preprocess()
+       # Join the tokenized content into a single string
+       text = "\n".join(text)
+       lines = [line.strip() for line in text.splitlines() if line.strip()]
+       
+       # ---------- 1. Extract Phone (10-digit, Indian style) ----------
+       phone = re.findall(r'\b[6-9]\d{9}\b', text)
+       phone = phone[0] if phone else None
 
-        # ---------- 2. Extract Email ----------
-        email = re.findall(r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}', text)
-        email = email[0] if email else None
+       # ---------- 2. Extract Email ----------
+       email = re.findall(r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}', text)
+       email = email[0] if email else None
 
-        # ---------- 3. Extract Links ----------
-        raw_urls = re.findall(r'https?://[^\s)>\]]+', text)
-        markdown_urls = re.findall(r'\[.*?\]\((https?://[^\s)]+)\)', text)
-        html_urls = re.findall(r'href="(https?://[^\s"]+)"', text)
-        links = list(set(raw_urls + markdown_urls + html_urls))
+       # ---------- 3. Extract Links ----------
+       raw_urls = re.findall(r'https?://[^\s)>\]]+', text)
+       markdown_urls = re.findall(r'\[.*?\]\((https?://[^\s)]+)\)', text)
+       html_urls = re.findall(r'href="(https?://[^\s"]+)"', text)
+       links = list(set(raw_urls + markdown_urls + html_urls))
 
-        # ---------- 4. Extract Name ----------
-        # Assume name is first non-empty line and contains no @ or digits
-        name = None
-        for line in lines[:5]:
-            if not any(char.isdigit() for char in line) and '@' not in line and len(line.split()) <= 5:
-                name = line
-                break
+       # ---------- 4. Extract Name ----------
+       # Assume name is first non-empty line and contains no @ or digits
+       name = None
+       for line in lines[:5]:
+           if not any(char.isdigit() for char in line) and '@' not in line and len(line.split()) <= 5:
+               name = line
+               break
 
-        return {
-            "name": name,
-            "phone": phone,
-            "email": email,
-            "links": links,
-        }
+       return {
+           "name": name,
+           "phone": phone,
+           "email": email,
+           "links": links,
+       }
+   
 
     def section_identification(self):
         document = self.data_ingestion()
