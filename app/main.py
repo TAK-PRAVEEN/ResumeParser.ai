@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify, render_template, flash, redirect, session, url_for
 from database import db, user_ops, resume_ops
-import parser.ResumeParser
+from resume_parser import ResumeParser
 import os
 
 base_path = os.path.abspath(os.path.dirname(__file__))
@@ -16,8 +16,8 @@ def home():
 
 @app.route('/register', methods=['POST'])
 def register():
-    email = request.form.get('register-email')  # Must match input name
-    password = request.form.get('register-password')  # Must match input name
+    email = request.form.get('register-email') 
+    password = request.form.get('register-password') 
 
     # if not email or not password:
     #     return jsonify({'msg': 'Missing form fields'}), 400  # Add this for safety
@@ -33,17 +33,13 @@ def login():
     email = request.form.get('login-email')
     password = request.form.get('login-password')
     
-    # Validate input
     if not email or not password:
         return jsonify({'msg': 'Missing form fields'}), 400
     
-    # Check credentials
     if user_ops.validate_login(email, password):
-        session['user_email'] = email  # Store user email in session
-        return jsonify({'msg': 'Login Successful'}), 200  # Use 200 for success
-    
-    return jsonify({'msg': 'Invalid Email/Password'}), 401  # Use 401 for unauthorized
-
+        session['user_email'] = email  
+        return jsonify({'msg': 'Login Successful'}), 200  
+    return jsonify({'msg': 'Invalid Email/Password'}), 401  
 
 @app.route('/check_email', methods=['POST'])
 def check_email():
