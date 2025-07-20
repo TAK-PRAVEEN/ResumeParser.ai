@@ -1,12 +1,16 @@
-from flask import Flask, request, jsonify, render_template, session, send_file
+from flask import Flask, request, jsonify, render_template, session, send_file, after_this_request
 from database import db, user_ops, resume_ops
 from resume_parser import ResumeParser
 import os
 import uuid
+import logging
 
 base_path = os.path.abspath(os.path.dirname(__file__))
 template_path = os.path.join(base_path, 'frontend', 'templates')
 static_path = os.path.join(base_path, 'frontend', 'static')
+
+
+logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__, template_folder=template_path, static_folder=static_path)
 app.secret_key = "account123456789"
@@ -91,6 +95,10 @@ def parsing():
                 os.remove(file_path)
     return render_template('parsing.html')
 
+from flask import send_file, jsonify
+import os
+
+
 @app.route('/download', methods=['GET'])
 def download():
     format = request.args.get('format')
@@ -100,22 +108,38 @@ def download():
 
     # Call the ResumeParser class to generate the file in the requested format
     try:
+        resume_parser = ResumeParser(file_path)  # Initialize the parser with the file path
+
         if format == 'json':
-            resume_parser = ResumeParser(file_path)
-            resume_parser.json_format()  # Generate the JSON file
-            return send_file("resume_data.json", as_attachment=True)  # Send the JSON file for download
+            download_path = resume_parser.json_format()  # Generate the JSON file
         elif format == 'csv':
-            resume_parser = ResumeParser(file_path)
-            resume_parser.csv_format()  # Generate the CSV file
-            return send_file("resume_data.csv", as_attachment=True)  # Send the CSV file for download
+            download_path = resume_parser.csv_format()  # Generate the CSV file
         elif format == 'excel':
-            resume_parser = ResumeParser(file_path)
-            resume_parser.excel_format()  # Generate the Excel file
-            return send_file("resume_data.xlsx", as_attachment=True)  # Send the Excel file for download
+            download_path = resume_parser.excel_format()  # Generate the Excel file
         else:
             return jsonify({'msg': 'Invalid format'}), 400
+
+        # Check if the file exists and is not empty
+        if not os.path.exists(download_path):
+            return jsonify({'msg': 'Generated file does not exist'}), 500
+
+        # Serve the file for download
+        response = send_file(download_path, as_attachment=True)  # Send the file for download
+
+        # Delete the temporary file after sending
+        @after_this_request
+        def cleanup(response):
+            try:
+                os.remove(download_path)
+            except Exception as e:
+                logging.error("Error deleting temporary file: %s", e)
+            return response
+
+        return response
     except Exception as e:
         return jsonify({'msg': 'Error generating file', 'error': str(e)}), 500
+
+
 
 
 @app.route('/terms-and-conditions')

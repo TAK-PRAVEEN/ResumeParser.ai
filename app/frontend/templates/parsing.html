@@ -8,39 +8,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&amp;display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="{{ url_for('static', filename='css/parsed.css') }}" />
-  <style>
-      .section {
-          margin-bottom: 20px;
-          opacity: 0; /* Start hidden for typewriter effect */
-          transition: opacity 0.5s ease-in;
-      }
-
-      .section h3 {
-          margin: 0;
-          color: #007bff;
-      }
-
-      .error-message {
-          color: red;
-      }
-
-      .typewriter {
-          display: inline-block;
-          overflow: hidden; /* Ensures the text is hidden until revealed */
-          border-right: 0.15em solid orange; /* Cursor effect */
-          white-space: nowrap;
-          animation: blink-caret 0.75s step-end infinite;
-      }
-
-      @keyframes blink-caret {
-          from, to { border-color: transparent; }
-          50% { border-color: orange; }
-      }
-
-      .download-section {
-          margin-top: 20px;
-      }
-  </style>
 </head>
 <body>
   <!-- Fixed Header -->
@@ -72,23 +39,23 @@
             Start Parsing
         </button>
       </form>
+      <!-- Download Section -->
+      <div class="download-section" id="downloadSection" style="display: none;">
+        <h3>Download Parsed Resume</h3>
+        <label for="downloadFormat">Select Format:</label>
+        <select id="downloadFormat">
+          <option value="json">JSON</option>
+          <option value="csv">CSV</option>
+          <option value="excel">Excel</option>
+        </select>
+        <button id="downloadBtn">Download</button>
+      </div>
+    </section>
     </div>
 
     <!-- Container for displaying parsed data -->
     <div id="parsed-data" class="parsed-data"></div>
 
-    <!-- Download Section -->
-    <div class="download-section" id="downloadSection" style="display: none;">
-      <h3>Download Parsed Resume</h3>
-      <label for="downloadFormat">Select Format:</label>
-      <select id="downloadFormat">
-        <option value="json">JSON</option>
-        <option value="csv">CSV</option>
-        <option value="excel">Excel</option>
-      </select>
-      <button id="downloadBtn">Download</button>
-    </div>
-  </section>
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
