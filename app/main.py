@@ -95,8 +95,6 @@ def parsing():
                 os.remove(file_path)
     return render_template('parsing.html')
 
-from flask import send_file, jsonify
-import os
 
 
 @app.route('/download', methods=['GET'])
@@ -121,7 +119,12 @@ def download():
 
         # Check if the file exists and is not empty
         if not os.path.exists(download_path):
+            logging.error(f"File not found: {download_path}")
             return jsonify({'msg': 'Generated file does not exist'}), 500
+
+        if os.path.getsize(download_path) == 0:
+            logging.error(f"File is empty: {download_path}")
+            return jsonify({'msg': 'Generated file is empty'}), 500
 
         # Serve the file for download
         response = send_file(download_path, as_attachment=True)  # Send the file for download
@@ -137,8 +140,58 @@ def download():
 
         return response
     except Exception as e:
+        logging.exception("Error generating or sending file")
         return jsonify({'msg': 'Error generating file', 'error': str(e)}), 500
 
+
+# @app.route('/download', methods=['GET'])
+# def download():
+#     format = request.args.get('format')
+#     file_path = session.get('file_path')  # Get the file path from the session
+#     if not file_path:
+#         return jsonify({'msg': 'No file available for download'}), 400  # Ensure file is available
+
+#     # Call the ResumeParser class to generate the file in the requested format
+#     try:
+#         resume_parser = ResumeParser(file_path)  # Initialize the parser with the file path
+
+#         if format == 'json':
+#             download_path = resume_parser.json_format()  # Generate the JSON file
+#         elif format == 'csv':
+#             download_path = resume_parser.csv_format()  # Generate the CSV file
+#         elif format == 'excel':
+#             download_path = resume_parser.excel_format()  # Generate the Excel file
+#         else:
+#             return jsonify({'msg': 'Invalid format'}), 400
+
+#         # Check if the file exists and is not empty
+#         if not os.path.exists(download_path):
+#             return jsonify({'msg': 'Generated file does not exist'}), 500
+
+#         # Serve the file for download
+#         response = send_file(download_path, as_attachment=True)  # Send the file for download
+
+#         # Delete the temporary file after sending
+#         @after_this_request
+#         def cleanup(response):
+#             try:
+#                 os.remove(download_path)
+#             except Exception as e:
+#                 logging.error("Error deleting temporary file: %s", e)
+#             return response
+
+#         return response
+#     except Exception as e:
+#         return jsonify({'msg': 'Error generating file', 'error': str(e)}), 500
+
+@app.route('/test_json', methods=['GET'])
+def test_json():
+    try:
+        resume_parser = ResumeParser("path_to_some_resume_file")  # Use a valid file path
+        json_path = resume_parser.json_format()  # Generate the JSON file
+        return jsonify({'msg': 'JSON file generated successfully', 'path': json_path}), 200
+    except Exception as e:
+        return jsonify({'msg': 'Error generating JSON file', 'error': str(e)}), 500
 
 
 
