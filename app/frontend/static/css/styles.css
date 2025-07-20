@@ -18,7 +18,7 @@ body::before {
   transform: translate(-50%, -50%);
   width: 60%;
   height: 60%;
-  background-image: url('static/Logo_Resume_Parser_Inverted-removebg-preview.png'); /* Replace with your logo */
+  /* background-image: url('static/Logo_Resume_Parser_Inverted-removebg-preview.png'); Replace with your logo */
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;

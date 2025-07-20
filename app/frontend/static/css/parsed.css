@@ -17,7 +17,7 @@ body::before {
   transform: translate(-50%, -50%);
   width: 60%;
   height: 60%;
-  background-image: url('/app/frontend/static/Logo_Resume_Parser_Inverted-removebg-preview.png'); /* Replace with your logo */
+  /* background-image: url('/app/frontend/static/Logo_Resume_Parser_Inverted-removebg-preview.png'); Replace with your logo */
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
@@ -182,7 +182,7 @@ body::before {
       transform: translate(-50%, -50%);
       width: 60%;
       height: 60%;
-      background-image:  url('/app/frontend/static/Logo_Resume_Parser_Inverted-removebg-preview.png');
+      /* background-image: url('{{ url_for('static', filename='Logo_Resume_Parser_Inverted-removebg-preview.png') }}'); */
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;

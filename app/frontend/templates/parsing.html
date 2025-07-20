@@ -9,28 +9,41 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="{{ url_for('static', filename='css/parsed.css') }}" />
   <style>
-      .typewriter {
-          font-family: monospace;
-          white-space: nowrap;
-          overflow: hidden; /* Ensures the text is hidden until revealed */
-          border-right: 0.15em solid orange; /* Cursor effect */
-          width: 0; /* Start with no width */
-          animation: typing 4s steps(30, end), blink-caret 0.75s step-end infinite;
+      .section {
+          margin-bottom: 20px;
+          opacity: 0; /* Start hidden for typewriter effect */
+          transition: opacity 0.5s ease-in;
       }
 
-      @keyframes typing {
-          from { width: 0; }
-          to { width: 100%; }
+      .section h3 {
+          margin: 0;
+          color: #007bff;
+      }
+
+      .error-message {
+          color: red;
+      }
+
+      .typewriter {
+          display: inline-block;
+          overflow: hidden; /* Ensures the text is hidden until revealed */
+          border-right: 0.15em solid orange; /* Cursor effect */
+          white-space: nowrap;
+          animation: blink-caret 0.75s step-end infinite;
       }
 
       @keyframes blink-caret {
           from, to { border-color: transparent; }
           50% { border-color: orange; }
       }
+
+      .download-section {
+          margin-top: 20px;
+      }
   </style>
 </head>
 <body>
-  <!-- Fixed Header (Same as home page) -->
+  <!-- Fixed Header -->
   <header class="header">
     <h1 class="header-title">
       <span>ResumeParser.ai</span>
@@ -46,23 +59,35 @@
       
       <form id="uploadForm" method="POST" enctype="multipart/form-data">
         <div class="drag-drop-area" id="dragDropArea">
-          <div class="icon">
-            <i class="fas fa-file-upload"></i>
-          </div>
-          <p>Drag & drop your resume here</p>
-          <p class="or-text">OR</p>
-          <button type="button" class="browse-btn">Browse Files</button>
-          <input type="file" id="fileInput" name="resume" accept=".pdf,.docx,.txt" style="display: none;">
+            <div class="icon">
+                <i class="fas fa-file-upload"></i>
+            </div>
+            <p>Drag & drop your resume here</p>
+            <p class="or-text">OR</p>
+            <button type="button" class="browse-btn">Browse Files</button>
+            <input type="file" id="fileInput" name="resume" accept=".pdf,.docx,.txt" style="display: none;">
         </div>
         
         <button class="parse-btn" id="parseBtn" disabled>
-          Start Parsing
+            Start Parsing
         </button>
       </form>
     </div>
 
     <!-- Container for displaying parsed data -->
     <div id="parsed-data" class="parsed-data"></div>
+
+    <!-- Download Section -->
+    <div class="download-section" id="downloadSection" style="display: none;">
+      <h3>Download Parsed Resume</h3>
+      <label for="downloadFormat">Select Format:</label>
+      <select id="downloadFormat">
+        <option value="json">JSON</option>
+        <option value="csv">CSV</option>
+        <option value="excel">Excel</option>
+      </select>
+      <button id="downloadBtn">Download</button>
+    </div>
   </section>
 
   <script>
@@ -70,6 +95,9 @@
       const dragDropArea = document.getElementById('dragDropArea');
       const fileInput = document.getElementById('fileInput');
       const parseBtn = document.getElementById('parseBtn');
+      const downloadSection = document.getElementById('downloadSection');
+      const downloadBtn = document.getElementById('downloadBtn');
+      const downloadFormat = document.getElementById('downloadFormat');
       
       let selectedFile = null;
 
@@ -133,44 +161,82 @@
       });
 
       document.getElementById('uploadForm').addEventListener('submit', function(event) {
-        event.preventDefault(); // Prevent default form submission
+          event.preventDefault(); // Prevent default form submission
 
-        const formData = new FormData(this);
+          const formData = new FormData(this);
 
-        fetch('/parsing', {
-          method: 'POST',
-          body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-          console.log(data); // Handle the parsed data
-          alert('Parsing complete! Check console for details.');
+          fetch('/parsing', {
+              method: 'POST',
+              body: formData
+          })
+          .then(response => {
+              if (!response.ok) {
+                  throw new Error('Network response was not ok');
+              }
+              return response.json();
+          })
+          .then(data => {
+              console.log(data); // Log the parsed data to the console
+              displayParsedData(data); // Call your function to display the parsed data
+              downloadSection.style.display = 'block'; // Show download section after parsing
+          })
+          .catch(error => {
+              console.error('Error:', error);
+              document.getElementById('parsed-data').innerHTML = 
+                  '<p class="error-message">Failed to parse resume. Please try again.</p>';
+          });
+      });
 
-          // Display parsed data with typewriter effect
-          const parsedDataContainer = document.getElementById('parsed-data');
-          parsedDataContainer.innerHTML = ''; // Clear previous data
-          typeWriterEffect(data); // Call the typewriter effect
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          alert('An error occurred while parsing the resume.');
-        });
+      // Download button click handler
+      downloadBtn.addEventListener('click', function() {
+          const format = downloadFormat.value;
+          // Create a temporary anchor element
+          const link = document.createElement('a');
+          link.href = `/download?format=${format}`;
+          link.download = `resume.${format}`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
       });
     });
 
-    function typeWriterEffect(data) {
+    function displayParsedData(data) {
       const parsedDataContainer = document.getElementById('parsed-data');
+      parsedDataContainer.innerHTML = ''; // Clear previous data
+
+      Object.entries(data).forEach(([section, details]) => {
+        const sectionElement = document.createElement('div');
+        sectionElement.classList.add('section');
+        
+        // Create section header
+        const header = document.createElement('h3');
+        header.textContent = section;
+        sectionElement.appendChild(header);
+        
+        // Format details (whether string or array)
+        const detailsText = Array.isArray(details) ? details.join('<br>• ') : details;
+        
+        const detailsElement = document.createElement('p');
+        detailsElement.innerHTML = detailsText; // Use innerHTML to allow line breaks
+        sectionElement.appendChild(detailsElement);
+        
+        parsedDataContainer.appendChild(sectionElement);
+      });
+
+      // Initiate typewriter effect for each section
+      const sections = parsedDataContainer.querySelectorAll('.section');
       let index = 0;
-      const text = Object.entries(data).map(([section, details]) => `${section}: ${details}`).join('\n');
-               
-      function type() {
-        if (index < text.length) {
-          parsedDataContainer.textContent += text.charAt(index);
+
+      function typeWriterEffect() {
+        if (index < sections.length) {
+          const section = sections[index];
+          section.style.opacity = 1; // Fade in
           index++;
-          setTimeout(type, 50); // Adjust speed here
+          setTimeout(typeWriterEffect, 1000); // Wait before showing the next section
         }
       }
-      type();
+
+      typeWriterEffect(); // Start the typewriter effect
     }
   </script>
 </body>

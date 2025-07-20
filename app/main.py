@@ -1,7 +1,8 @@
-from flask import Flask, request, jsonify, render_template, flash, redirect, session, url_for
+from flask import Flask, request, jsonify, render_template, session, send_file
 from database import db, user_ops, resume_ops
 from resume_parser import ResumeParser
 import os
+import uuid
 
 base_path = os.path.abspath(os.path.dirname(__file__))
 template_path = os.path.join(base_path, 'frontend', 'templates')
@@ -19,13 +20,14 @@ def register():
     email = request.form.get('register-email') 
     password = request.form.get('register-password') 
 
-    # if not email or not password:
-    #     return jsonify({'msg': 'Missing form fields'}), 400  # Add this for safety
+    if not email or not password:
+        return jsonify({'msg': 'Missing form fields'}), 400  # Add this for safety
 
     if user_ops.get_user_by_email(email):
         return jsonify({'msg': 'Email already exists'}), 409
 
     user_ops.register_user(email, password)
+    session['user_email'] = email  # Store email in session
     return jsonify({'msg': 'Registration successful'}), 201
 
 @app.route('/login', methods=['POST'])
@@ -37,7 +39,7 @@ def login():
         return jsonify({'msg': 'Missing form fields'}), 400
     
     if user_ops.validate_login(email, password):
-        session['user_email'] = email  
+        session['user_email'] = email  # Store email in session
         return jsonify({'msg': 'Login Successful'}), 200  
     return jsonify({'msg': 'Invalid Email/Password'}), 401  
 
@@ -48,8 +50,6 @@ def check_email():
     existing_user = user_ops.get_user_by_email(email)
     return jsonify({'exists': existing_user})
 
-import uuid
-
 @app.route("/parsing", methods=["GET", "POST"])
 def parsing():
     if request.method == "POST":
@@ -57,7 +57,6 @@ def parsing():
             return jsonify({'msg': 'No file part'}), 400
            
         file = request.files['resume']
-           
         if file.filename == '':
             return jsonify({'msg': 'No selected file'}), 400
            
@@ -68,23 +67,55 @@ def parsing():
 
         # Check if the file is empty
         if os.path.getsize(file_path) == 0:
-           return jsonify({'msg': 'Uploaded file is empty'}), 400
+            os.remove(file_path)  # Clean up the empty file
+            return jsonify({'msg': 'Uploaded file is empty'}), 400
+
         # Use ResumeParser to parse the resume
         try:
+            email = session.get('user_email')  # Retrieve email from session
+            if not email:
+                return jsonify({'msg': 'User  not logged in'}), 401  # Ensure user is logged in
+
             resume_data = ResumeParser(file_path).section_identification()
-            print("Parsed Data:", resume_data)  # Debugging line to check the output
+            resume_ops.insert_resume(email, resume_data)  # Store resume with associated email
+
+            print("Parsed Data:", resume_data)
+            session['file_path'] = file_path  # Store the file path in session for download
+            return jsonify(resume_data)  # Return parsed data as JSON
+        except Exception as e:
+            print("Error parsing resume:", e)
+            return jsonify({'msg': 'Error parsing resume', 'error': str(e)}), 500
         finally:
             # Ensure the file is deleted after processing
             if os.path.exists(file_path):
                 os.remove(file_path)
+    return render_template('parsing.html')
 
-        # Render the template with the parsed data
-        return render_template("parsing.html", resume_data=resume_data)
-    else:
-        return render_template("parsing.html")
-   
+@app.route('/download', methods=['GET'])
+def download():
+    format = request.args.get('format')
+    file_path = session.get('file_path')  # Get the file path from the session
+    if not file_path:
+        return jsonify({'msg': 'No file available for download'}), 400  # Ensure file is available
 
-
+    # Call the ResumeParser class to generate the file in the requested format
+    try:
+        if format == 'json':
+            resume_parser = ResumeParser(file_path)
+            resume_parser.json_format()  # Generate the JSON file
+            return send_file("resume_data.json", as_attachment=True)  # Send the JSON file for download
+        elif format == 'csv':
+            resume_parser = ResumeParser(file_path)
+            resume_parser.csv_format()  # Generate the CSV file
+            return send_file("resume_data.csv", as_attachment=True)  # Send the CSV file for download
+        elif format == 'excel':
+            resume_parser = ResumeParser(file_path)
+            resume_parser.excel_format()  # Generate the Excel file
+            return send_file("resume_data.xlsx", as_attachment=True)  # Send the Excel file for download
+        else:
+            return jsonify({'msg': 'Invalid format'}), 400
+    except Exception as e:
+        return jsonify({'msg': 'Error generating file', 'error': str(e)}), 500
 
 
 @app.route('/terms-and-conditions')
