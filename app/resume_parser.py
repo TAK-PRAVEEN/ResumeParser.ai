@@ -61,27 +61,13 @@ class ResumeParser:
         self.file = file
 
     def data_ingestion(self):
-        file_path = self.file
-        ext = os.path.splitext(file_path)[-1].lower()
+        # Ensure that self.file_path is set correctly
+        if not os.path.exists(self.file_path):
+            raise FileNotFoundError(f"The file does not exist: {self.file_path}")
 
-        if ext == ".txt":
-            with open(file_path, "r", encoding="utf-8") as f:
-                content = f.read()
-
-        elif ext == ".pdf":
-            content = ""
-            with open(file_path, "rb") as f:
-                reader = PyPDF2.PdfReader(f)
-                for page in reader.pages:
-                    content += page.extract_text() or ""
-
-        elif ext == ".docx":
-            content = docx2txt.process(file_path)
-
-        else:
-            raise ValueError("Unsupported file format. Please upload .pdf, .docx, or .txt")
-
+        content = docx2txt.process(self.file_path)
         return content
+
 
     def preprocess(self):
         content = self.data_ingestion()

@@ -5,6 +5,10 @@ import os
 import uuid
 import logging
 from werkzeug.utils import secure_filename
+import json
+import tempfile
+import csv
+import pandas as pd
 
 base_path = os.path.abspath(os.path.dirname(__file__))
 template_path = os.path.join(base_path, 'frontend', 'templates')
@@ -85,7 +89,6 @@ def parsing():
                 return jsonify({'msg': 'User  not logged in'}), 401  # Ensure user is logged in
 
             resume_data = ResumeParser(file_path).section_identification()
-            resume_ops.insert_resume(email, resume_data)  # Store resume with associated email
 
             print("Parsed Data:", resume_data)
             session['file_path'] = file_path  # Store the file path in session for download
@@ -99,6 +102,7 @@ def parsing():
                 os.remove(file_path)
     return render_template('parsing.html')
 
+
 @app.route('/upload', methods=['POST'])
 def upload_resume():
     if 'resume' not in request.files:
@@ -108,101 +112,49 @@ def upload_resume():
     if file.filename == '':
         return jsonify({'msg': 'No selected file'}), 400
 
-    # Save the uploaded file to a temporary location
-    filename = secure_filename(file.filename)
-    unique_filename = f"{uuid.uuid4()}_{filename}"
-    save_path = os.path.join(app.root_path, 'uploads', unique_filename)
+    try:
+        email = session.get('user_email')  # Retrieve email from session
+        if not email:
+            return jsonify({'msg': 'User  not logged in'}), 401  # Ensure user is logged in
 
-    os.makedirs(os.path.dirname(save_path), exist_ok=True)
-    file.save(save_path)
+        # Save the file to MongoDB
+        file_id = resume_ops.save_file_to_db(email, file)
+
+        # Store the file ID in the session for later retrieval
+        session['file_id'] = file_id
+
+        return jsonify({'msg': 'Uploaded and stored in MongoDB', 'file_id': file_id}), 200
+    except Exception as e:
+        logging.exception("Error in upload")
+        return jsonify({'msg': 'Error', 'error': str(e)}), 500
+
+
+@app.route("/download/<format>")
+def download_file(format):
+    file_id = session.get("file_id")  # Get the file ID from the session
+    if not file_id:
+        return jsonify({"error": "Missing file ID"}), 400
 
     try:
-        # Parse and generate output formats immediately
-        resume_parser = ResumeParser(save_path)
+        # Retrieve the file from MongoDB
+        file_path = resume_ops.get_file_from_db(file_id)
 
-        json_path = resume_parser.json_format()
-        csv_path = resume_parser.csv_format()
-        excel_path = resume_parser.excel_format()
+        # Use ResumeParser to convert the file to the requested format
+        resume_parser = ResumeParser(file_path)
+        if format == "json":
+            output_path = resume_parser.json_format()
+        elif format == "csv":
+            output_path = resume_parser.csv_format()
+        elif format == "excel":
+            output_path = resume_parser.excel_format()
+        else:
+            return jsonify({"error": "Invalid format"}), 400
 
-        # Save generated paths to session
-        session['json_path'] = json_path
-        session['csv_path'] = csv_path
-        session['excel_path'] = excel_path
+        return send_file(output_path, as_attachment=True)
 
-        # Optionally remove the uploaded file after parsing
-        os.remove(save_path)
-
-        return jsonify({'msg': 'File uploaded and parsed successfully'}), 200
     except Exception as e:
-        logging.exception("Error during resume parsing")
-        return jsonify({'msg': 'Resume parsing failed', 'error': str(e)}), 500
-
-@app.route('/download', methods=['GET'])
-def download():
-    format = request.args.get('format')
-    file_path = session.get(f'{format}_path')  # e.g. 'json_path'
-
-    if not file_path or not os.path.exists(file_path):
-        return jsonify({'msg': 'Requested file not available'}), 400
-
-    try:
-        response = send_file(file_path, as_attachment=True)
-
-        @after_this_request
-        def cleanup(response):
-            try:
-                os.remove(file_path)
-            except Exception as e:
-                logging.error("Error deleting file: %s", e)
-            return response
-
-        return response
-    except Exception as e:
-        logging.exception("Error sending file")
-        return jsonify({'msg': 'Download failed', 'error': str(e)}), 500
-
-# @app.route('/download', methods=['GET'])
-# def download():
-#     format = request.args.get('format')
-#     file_path = session.get('file_path')  # Get the file path from the session
-#     if not file_path:
-#         return jsonify({'msg': 'No file available for download'}), 400  # Ensure file is available
-
-#     # Call the ResumeParser class to generate the file in the requested format
-#     try:
-#         resume_parser = ResumeParser(file_path)  # Initialize the parser with the file path
-
-#         if format == 'json':
-#             download_path = resume_parser.json_format()  # Generate the JSON file
-#         elif format == 'csv':
-#             download_path = resume_parser.csv_format()  # Generate the CSV file
-#         elif format == 'excel':
-#             download_path = resume_parser.excel_format()  # Generate the Excel file
-#         else:
-#             return jsonify({'msg': 'Invalid format'}), 400
-
-#         # Check if the file exists and is not empty
-#         if not os.path.exists(download_path):
-#             return jsonify({'msg': 'Generated file does not exist'}), 500
-
-#         # Serve the file for download
-#         response = send_file(download_path, as_attachment=True)  # Send the file for download
-
-#         # Delete the temporary file after sending
-#         @after_this_request
-#         def cleanup(response):
-#             try:
-#                 os.remove(download_path)
-#             except Exception as e:
-#                 logging.error("Error deleting temporary file: %s", e)
-#             return response
-
-#         return response
-#     except Exception as e:
-#         return jsonify({'msg': 'Error generating file', 'error': str(e)}), 500
-
-
-
+        logging.exception("Download failed")
+        return jsonify({"error": "Server error", "details": str(e)}), 500
 
 @app.route('/terms-and-conditions')
 def terms():
