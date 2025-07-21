@@ -1,20 +1,12 @@
-# Use Python image
 FROM python:3.10-slim
 
-# Set working directory
 WORKDIR /app
 
-# Copy all files into the container
-COPY . .
+COPY requirements.txt .
 
-# Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Download NLTK data
-RUN python -m nltk.downloader punkt
+COPY . .
 
-# Expose port
-EXPOSE 5000
+CMD ["python", "app/main.py"]
 
-# Run Flask app
-CMD ["python", "main.py"]
