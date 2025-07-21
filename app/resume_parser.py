@@ -153,7 +153,9 @@ class ResumeParser:
                     else:
                         previous_section = section_name
                         ps = current_section
-            
+
+            for section, details in sections.items():
+                sections[section] = str("".join(details))   
         return sections
 
     def csv_format(self):
