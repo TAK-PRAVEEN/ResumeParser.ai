@@ -2,42 +2,14 @@ Section,Content
 name,Praveen Tak
 phone,9462096002
 email,praveentak715@gmail.com
+links,
 personal_info,PROFILE
-experience,WORK EXPERIENCE
-experience,"Feb 2025 – Apr 2025	Project Trainee – Defence Research and Development Organisation (DRDO)					 Jodhpur, India
-Domain: Machine Learning | Computer Vision | Deep Learning"
-experience,Key Responsibilities & Learnings:
-experience,Worked on the project “Painting Generation using CycleGANs” exploring advanced concepts in image-to-image translation using Generative Adversarial Networks.
-experience,"Implemented neural network models using Python, TensorFlow/PyTorch, and other ML libraries."
-experience,"Performed data preprocessing, augmentation, and evaluation of generated outputs."
-projects,PROJECTS
-projects,Jan 2025  Feb 2025	Mushroom Classification — Machine Learning
-skills,Aug 2023  Jan 2025	Full Stack Data Science Pro — PW Skills
-skills,"Oct 2024	Codemathon 2024 — Department of Mathematics, NIT Kurukshetra"
-skills,Feb 2024  Feb 2024	Python Stack — Great Learning
-skills,Oct 2023  Oct 2023	Python for Data Science — Udemy
-skills,"May 2023	Learn Python & Machine Learning — Microsoft Learn Student Ambassador, Google Developer Student Clubs"
-skills,Mar 2023	Cloud Technical Series — Google
-interests,EXTRA-CURRICULAR ACTIVITIES
-interests,Poster Making Competition Winner – National Mathematics Day
-interests,Active participant in coding competitions and hackathons
-interests,Calligraphy Competition Winner  APS Session 2021-22
-interests,National Reading (English)  APS Session 2021-22
-education,EDUCATION
-education,"Sep 2022 – Jul 2025 	Bachelor of Science (PMCS), Lachoo Memorial    	          84.50% of College Science & Technology, Jodhpur"
-education,"May 2021 – Jul 2022 	XII (Science), Army Public School, Jodhpur 		          85.00%"
-education,"Apr 2019 – Apr 2020 	X, Army Public School, Jodhpur		                       87.83%"
-languages,"Programming Languages: Python, Java, SQL, C, C++"
-languages,"Machine Learning & Data Analysis: Scikit-learn, TensorFlow, Pandas, NumPy, Matplotlib"
-languages,"Web Development: Flask, FastAPI, HTML, CSS"
-languages,"Tools: Power BI, Excel"
-certifications,COURSES & CERTIFICATES
-certifications,Jun 2025  Jun 2025	Microsoft Power BI — Infosys Springboard
-certifications,"Jun 2025 	FinQuest — Department of Finance Studies, University of Delhi"
-certifications,Jun 2025	Central India Hackathon 2.0 — Unstop
-achievements,ACHIEVEMENTS
-achievements,"Finalist, Central India Hackathon 2.0"
-achievements,Honours in B.Sc.
-achievements,"Winner, Hourly Problem (Sandhnaam 2025)"
-achievements,"Runner-Up, Overnight Problem (Sandhnaam 2025)"
-achievements,"Winner, MiniHackathon 2024"
+experience,"WORK EXPERIENCEFeb 2025 – Apr 2025	Project Trainee – Defence Research and Development Organisation (DRDO)					 Jodhpur, India
+Domain: Machine Learning | Computer Vision | Deep LearningKey Responsibilities & Learnings:Worked on the project “Painting Generation using CycleGANs” exploring advanced concepts in image-to-image translation using Generative Adversarial Networks.Implemented neural network models using Python, TensorFlow/PyTorch, and other ML libraries.Performed data preprocessing, augmentation, and evaluation of generated outputs."
+projects,PROJECTSJan 2025  Feb 2025	Mushroom Classification — Machine Learning
+skills,"Aug 2023  Jan 2025	Full Stack Data Science Pro — PW SkillsOct 2024	Codemathon 2024 — Department of Mathematics, NIT KurukshetraFeb 2024  Feb 2024	Python Stack — Great LearningOct 2023  Oct 2023	Python for Data Science — UdemyMay 2023	Learn Python & Machine Learning — Microsoft Learn Student Ambassador, Google Developer Student ClubsMar 2023	Cloud Technical Series — Google"
+interests,EXTRA-CURRICULAR ACTIVITIESPoster Making Competition Winner – National Mathematics DayActive participant in coding competitions and hackathonsCalligraphy Competition Winner  APS Session 2021-22National Reading (English)  APS Session 2021-22
+education,"EDUCATIONSep 2022 – Jul 2025 	Bachelor of Science (PMCS), Lachoo Memorial    	          84.50% of College Science & Technology, JodhpurMay 2021 – Jul 2022 	XII (Science), Army Public School, Jodhpur 		          85.00%Apr 2019 – Apr 2020 	X, Army Public School, Jodhpur		                       87.83%"
+languages,"Programming Languages: Python, Java, SQL, C, C++Machine Learning & Data Analysis: Scikit-learn, TensorFlow, Pandas, NumPy, MatplotlibWeb Development: Flask, FastAPI, HTML, CSSTools: Power BI, Excel"
+certifications,"COURSES & CERTIFICATESJun 2025  Jun 2025	Microsoft Power BI — Infosys SpringboardJun 2025 	FinQuest — Department of Finance Studies, University of DelhiJun 2025	Central India Hackathon 2.0 — Unstop"
+achievements,"ACHIEVEMENTSFinalist, Central India Hackathon 2.0Honours in B.Sc.Winner, Hourly Problem (Sandhnaam 2025)Runner-Up, Overnight Problem (Sandhnaam 2025)Winner, MiniHackathon 2024"

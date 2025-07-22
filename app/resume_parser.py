@@ -156,36 +156,74 @@ class ResumeParser:
                         previous_section = section_name
                         ps = current_section
 
-            # for section, details in sections.items():
-            #     sections[section] = str("".join(details))   
+            for section, details in sections.items():
+                sections[section] = str("".join(details))   
 
         return sections
 
+
     def csv_format(self):
-        raw_text = self.section_identification()
-        with open("resume_data.csv", "w", encoding="utf-8", newline="") as f:
+        json_data = self.section_identification()
+        
+        # Convert JSON data to a dictionary if it's a JSON string
+        if isinstance(json_data, str):
+            json_data = json.loads(json_data)
+
+        # Define the uploads directory
+        uploads_dir = "uploads"
+        os.makedirs(uploads_dir, exist_ok=True)  # Create the directory if it doesn't exist
+
+        # Define the CSV file path
+        csv_file_path = os.path.join(uploads_dir, "resume_data.csv")
+        
+        # Open the CSV file for writing
+        with open(csv_file_path, "w", encoding="utf-8", newline="") as f:
             writer = csv.writer(f)
+            
+            # Write the header
             writer.writerow(["Section", "Content"])
 
-            for section, items in raw_text.items():
-                if isinstance(items, list):
-                    for item in items:
+            # Iterate through the JSON data and write to CSV
+            for section, content in json_data.items():
+                if isinstance(content, list):
+                    for item in content:
                         writer.writerow([section, item])
                 else:
-                    writer.writerow([section, str(items)])
+                    writer.writerow([section, str(content)])
+
+        # Simulate file download (in a real application, you would return the file)
+        # For example, in a Flask app, you would use send_file(csv_file_path)
+
+        # After the file is downloaded, delete it
+        # os.remove(csv_file_path)
+
 
     def json_format(self):
         raw_text = self.section_identification()
-        with open("resume_data.json", "w", encoding="utf-8") as f:
+        
+        # Define the uploads directory
+        uploads_dir = "uploads"
+        os.makedirs(uploads_dir, exist_ok=True)  # Create the directory if it doesn't exist
+
+        # Define the JSON file path
+        json_file_path = os.path.join(uploads_dir, "resume_data.json")
+        
+        # Write the JSON data to the file
+        with open(json_file_path, "w", encoding="utf-8") as f:
             json.dump(raw_text, f, indent=4, ensure_ascii=False)
 
-        with open("resume_data.json", "r", encoding="utf-8") as f:
+        # Read the JSON data back from the file
+        with open(json_file_path, "r", encoding="utf-8") as f:
             content = json.load(f)
+
         return content
+
 
     def excel_format(self):
         raw_text = self.section_identification()
         rows = []
+        
+        # Prepare the data for the DataFrame
         for section, items in raw_text.items():
             if isinstance(items, list):
                 for item in items:
@@ -193,6 +231,21 @@ class ResumeParser:
             else:
                 rows.append({"Section": section, "Content": str(items)})
 
+        # Define the uploads directory
+        uploads_dir = "uploads"
+        os.makedirs(uploads_dir, exist_ok=True)  # Create the directory if it doesn't exist
+
+        # Define the Excel file path
+        excel_file_path = os.path.join(uploads_dir, "resume_data.xlsx")
+        
+        # Create a DataFrame and save it to an Excel file
         df = pd.DataFrame(rows)
-        df = df.to_excel("resume_data.xlsx", index=False)
-        return df
+        df.to_excel(excel_file_path, index=False)
+
+        # Read the Excel file back (if needed)
+        # You can use pd.read_excel() if you want to read it back into a DataFrame
+        # df_read = pd.read_excel(excel_file_path)
+
+
+        return df  # Return the DataFrame if needed
+

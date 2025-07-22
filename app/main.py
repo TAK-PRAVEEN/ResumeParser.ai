@@ -117,14 +117,7 @@ def upload_resume():
         email = session.get('user_email')  # Retrieve email from session
         if not email:
             return jsonify({'msg': 'User  not logged in'}), 401  # Ensure user is logged in
-
-        # Save the file to MongoDB
-        file_id = resume_ops.save_file_to_db(email, file)
-
-        # Store the file ID in the session for later retrieval
-        session['file_id'] = file_id
-
-        return jsonify({'msg': 'Uploaded and stored in MongoDB', 'file_id': file_id}), 200
+        
     except Exception as e:
         logging.exception("Error in upload")
         return jsonify({'msg': 'Error', 'error': str(e)}), 500
