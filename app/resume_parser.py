@@ -61,12 +61,28 @@ class ResumeParser:
         self.file = file
 
     def data_ingestion(self):
-        # Ensure that self.file_path is set correctly
-        if not os.path.exists(self.file_path):
-            raise FileNotFoundError(f"The file does not exist: {self.file_path}")
+        # Check the file extension to determine how to read the file
+        _, file_extension = os.path.splitext(self.file)
 
-        content = docx2txt.process(self.file_path)
+        if file_extension == '.txt':
+            with open(self.file, "r", encoding="utf-8") as file:
+                content = file.read()
+        
+        elif file_extension == '.docx':
+            content = docx2txt.process(self.file)
+        
+        elif file_extension == '.pdf':
+            content = ""
+            with open(self.file, "rb") as file:
+                reader = PyPDF2.PdfReader(file)
+                for page in reader.pages:
+                    content += page.extract_text() + "\n"
+        
+        else:
+            raise ValueError("Unsupported file format: {}".format(file_extension))
+
         return content
+
 
 
     def preprocess(self):
@@ -140,8 +156,9 @@ class ResumeParser:
                         previous_section = section_name
                         ps = current_section
 
-            for section, details in sections.items():
-                sections[section] = str("".join(details))   
+            # for section, details in sections.items():
+            #     sections[section] = str("".join(details))   
+
         return sections
 
     def csv_format(self):
