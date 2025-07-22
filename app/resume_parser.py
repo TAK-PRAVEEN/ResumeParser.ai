@@ -6,7 +6,7 @@ import PyPDF2
 import json
 import re
 from nltk.tokenize import blankline_tokenize
-import tempfile
+import json
 
 class ResumeParser:
     def __init__(self, file):
@@ -163,10 +163,9 @@ class ResumeParser:
 
     def csv_format(self):
         raw_text = self.section_identification()
-        # Create a temporary file
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".csv", mode="w", encoding="utf-8") as f:
+        with open("resume_data.csv", "w", encoding="utf-8", newline="") as f:
             writer = csv.writer(f)
-            writer.writerow(["Section", "Content"])  # Header
+            writer.writerow(["Section", "Content"])
 
             for section, items in raw_text.items():
                 if isinstance(items, list):
@@ -174,18 +173,15 @@ class ResumeParser:
                         writer.writerow([section, item])
                 else:
                     writer.writerow([section, str(items)])
-            temp_file_path = f.name  # Get the temporary file path
-
-        return temp_file_path  # Return the path of the temporary file
 
     def json_format(self):
         raw_text = self.section_identification()
-        # Create a temporary file
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".json", mode="w", encoding="utf-8") as f:
+        with open("resume_data.json", "w", encoding="utf-8") as f:
             json.dump(raw_text, f, indent=4, ensure_ascii=False)
-            temp_file_path = f.name  # Get the temporary file path
 
-        return temp_file_path  # Return the path of the temporary file
+        with open("resume_data.json", "r", encoding="utf-8") as f:
+            content = json.load(f)
+        return content
 
     def excel_format(self):
         raw_text = self.section_identification()
@@ -197,10 +193,6 @@ class ResumeParser:
             else:
                 rows.append({"Section": section, "Content": str(items)})
 
-        # Create a temporary file
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".xlsx") as f:
-            df = pd.DataFrame(rows)
-            df.to_excel(f.name, index=False)  # Save to the temporary file
-            temp_file_path = f.name  # Get the temporary file path
-
-        return temp_file_path  # Return the path of the temporary file
+        df = pd.DataFrame(rows)
+        df = df.to_excel("resume_data.xlsx", index=False)
+        return df

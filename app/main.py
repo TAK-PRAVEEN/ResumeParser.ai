@@ -1,14 +1,9 @@
 from flask import Flask, request, jsonify, render_template, session, send_file, after_this_request
-from database import db, user_ops, resume_ops
+from database import user_ops, resume_ops
 from resume_parser import ResumeParser
 import os
 import uuid
 import logging
-from werkzeug.utils import secure_filename
-import json
-import tempfile
-import csv
-import pandas as pd
 
 base_path = os.path.abspath(os.path.dirname(__file__))
 template_path = os.path.join(base_path, 'frontend', 'templates')
@@ -90,8 +85,14 @@ def parsing():
 
             resume_data = ResumeParser(file_path).section_identification()
 
-            print("Parsed Data:", resume_data)
+            unique_id = uuid.uuid4()
+            session['id'] = unique_id
             session['file_path'] = file_path  # Store the file path in session for download
+
+            print("Parsed Data:", resume_data) 
+
+            resume_ops.insert_resume(unique_id, email, file)
+    
             return jsonify(resume_data)  # Return parsed data as JSON
         except Exception as e:
             print("Error parsing resume:", e)

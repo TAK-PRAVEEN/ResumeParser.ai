@@ -1,32 +1,15 @@
 {
+    "personal_info": "PROFILE",
+    "experience": "WORK EXPERIENCEFeb 2025 – Apr 2025\tProject Trainee – Defence Research and Development Organisation (DRDO)\t\t\t\t\t Jodhpur, India\nDomain: Machine Learning | Computer Vision | Deep LearningKey Responsibilities & Learnings:Worked on the project “Painting Generation using CycleGANs” exploring advanced concepts in image-to-image translation using Generative Adversarial Networks.Implemented neural network models using Python, TensorFlow/PyTorch, and other ML libraries.Performed data preprocessing, augmentation, and evaluation of generated outputs.",
+    "projects": "PROJECTSJan 2025  Feb 2025\tMushroom Classification — Machine Learning",
+    "skills": "Aug 2023  Jan 2025\tFull Stack Data Science Pro — PW SkillsOct 2024\tCodemathon 2024 — Department of Mathematics, NIT KurukshetraFeb 2024  Feb 2024\tPython Stack — Great LearningOct 2023  Oct 2023\tPython for Data Science — UdemyMay 2023\tLearn Python & Machine Learning — Microsoft Learn Student Ambassador, Google Developer Student ClubsMar 2023\tCloud Technical Series — Google",
+    "interests": "EXTRA-CURRICULAR ACTIVITIESPoster Making Competition Winner – National Mathematics DayActive participant in coding competitions and hackathonsCalligraphy Competition Winner  APS Session 2021-22National Reading (English)  APS Session 2021-22",
+    "education": "EDUCATIONSep 2022 – Jul 2025 \tBachelor of Science (PMCS), Lachoo Memorial    \t          84.50% of College Science & Technology, JodhpurMay 2021 – Jul 2022 \tXII (Science), Army Public School, Jodhpur \t\t          85.00%Apr 2019 – Apr 2020 \tX, Army Public School, Jodhpur\t\t                       87.83%",
+    "languages": "Programming Languages: Python, Java, SQL, C, C++Machine Learning & Data Analysis: Scikit-learn, TensorFlow, Pandas, NumPy, MatplotlibWeb Development: Flask, FastAPI, HTML, CSSTools: Power BI, Excel",
+    "certifications": "COURSES & CERTIFICATESJun 2025  Jun 2025\tMicrosoft Power BI — Infosys SpringboardJun 2025 \tFinQuest — Department of Finance Studies, University of DelhiJun 2025\tCentral India Hackathon 2.0 — Unstop",
+    "achievements": "ACHIEVEMENTSFinalist, Central India Hackathon 2.0Honours in B.Sc.Winner, Hourly Problem (Sandhnaam 2025)Runner-Up, Overnight Problem (Sandhnaam 2025)Winner, MiniHackathon 2024",
     "name": "Praveen Tak",
     "phone": "9462096002",
     "email": "praveentak715@gmail.com",
-    "links": [],
-    "personal_info": [
-        "PROFILE                                                                                                               \nPassionate Computer Science undergraduate specializing in Data Science and Machine Learning, with hands-on experience in computer vision and generative models. Recognized for delivering high-quality work in hackathons and academic projects. Actively seeking opportunities as a Data Science Intern or Machine Learning Engineer to contribute technical expertise and creativity to innovative teams.\nKey Skills & Interests:",
-        "Data Science & Analytics\nMachine Learning & Deep Learning\nPython, Pandas, NumPy, Matplotlib\nComputer Vision & GANs\nNeural Networks (CNNs, CycleGANs, NLP)\nData Preprocessing & Model Evaluations"
-    ],
-    "experience": [
-        "WORK EXPERIENCE\nFeb 2025 – Apr 2025\tProject Trainee – Defence Research and Development Organisation (DRDO)\t\t\t\t\t Jodhpur, India\nDomain: Machine Learning | Computer Vision | Deep Learning\nKey Responsibilities & Learnings:\nWorked on the project “Painting Generation using CycleGANs” exploring advanced concepts in image-to-image translation using Generative Adversarial Networks.\nImplemented neural network models using Python, TensorFlow/PyTorch, and other ML libraries.\nPerformed data preprocessing, augmentation, and evaluation of generated outputs."
-    ],
-    "education": [
-        "EDUCATION\nSep 2022 – Jul 2025 \tBachelor of Science (PMCS), Lachoo Memorial    \t          84.50% of College Science & Technology, Jodhpur\nMay 2021 – Jul 2022 \tXII (Science), Army Public School, Jodhpur \t\t          85.00%\nApr 2019 – Apr 2020 \tX, Army Public School, Jodhpur\t\t                       87.83%"
-    ],
-    "skills": [
-        "SKILLS\nProgramming Languages: Python, Java, SQL, C, C++\nMachine Learning & Data Analysis: Scikit-learn, TensorFlow, Pandas, NumPy, Matplotlib\nWeb Development: Flask, FastAPI, HTML, CSS \nTools: Power BI, Excel\nSoft Skills: Problem-Solving, Teamwork, Communication"
-    ],
-    "projects": [
-        "PROJECTS\n Jan 2025  Feb 2025\tMushroom Classification — Machine Learning\nDeveloped a machine learning model in Python to classify edible vs. poisonous mushrooms using features like odor and gill color. Achieved 99% accuracy with a Decision Tree classifier, demonstrating strong skills in data analysis, feature engineering, and model training.\nJan 2025  Jan 2025\tLibrary Management — Python Project\nDeveloped a Python-based Library Management System with a user-friendly GUI to handle adding, borrowing, and returning books. Integrated email database functionality to track user transactions and generate real-time listings of available books."
-    ],
-    "certifications": [
-        "COURSES & CERTIFICATES\nJun 2025  Jun 2025\tMicrosoft Power BI — Infosys Springboard\nJun 2025 \tFinQuest — Department of Finance Studies, University of Delhi\nJun 2025\tCentral India Hackathon 2.0 — Unstop\nAug 2023  Jan 2025\tFull Stack Data Science Pro — PW Skills\nOct 2024\tCodemathon 2024 — Department of Mathematics, NIT Kurukshetra\nFeb 2024  Feb 2024\tPython Stack — Great Learning\nOct 2023  Oct 2023\tPython for Data Science — Udemy\nMay 2023\tLearn Python & Machine Learning — Microsoft Learn Student Ambassador, Google Developer Student Clubs\nMar 2023\tCloud Technical Series — Google"
-    ],
-    "achievements": [
-        "ACHIEVEMENTS",
-        "Finalist, Central India Hackathon 2.0\nHonours in B.Sc.\nWinner, Hourly Problem (Sandhnaam 2025)\nRunner-Up, Overnight Problem (Sandhnaam 2025)\nWinner, MiniHackathon 2024"
-    ],
-    "interests": [
-        "EXTRA-CURRICULAR ACTIVITIES\nPoster Making Competition Winner – National Mathematics Day\nActive participant in coding competitions and hackathons\nCalligraphy Competition Winner  APS Session 2021-22\nNational Reading (English)  APS Session 2021-22"
-    ]
+    "links": []
 }
