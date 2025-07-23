@@ -156,8 +156,8 @@ class ResumeParser:
                         previous_section = section_name
                         ps = current_section
 
-            for section, details in sections.items():
-                sections[section] = str("".join(details))   
+            # for section, details in sections.items():
+            #     sections[section] = str("".join(details))   
 
         return sections
 
@@ -170,7 +170,7 @@ class ResumeParser:
             json_data = json.loads(json_data)
 
         # Define the uploads directory
-        uploads_dir = "uploads"
+        uploads_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'uploads'))
         os.makedirs(uploads_dir, exist_ok=True)  # Create the directory if it doesn't exist
 
         # Define the CSV file path
@@ -191,6 +191,7 @@ class ResumeParser:
                 else:
                     writer.writerow([section, str(content)])
 
+        return "resume_data.csv"
         # Simulate file download (in a real application, you would return the file)
         # For example, in a Flask app, you would use send_file(csv_file_path)
 
@@ -202,10 +203,10 @@ class ResumeParser:
         raw_text = self.section_identification()
         
         # Define the uploads directory
-        uploads_dir = "uploads"
+        uploads_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'uploads'))
         os.makedirs(uploads_dir, exist_ok=True)  # Create the directory if it doesn't exist
 
-        # Define the JSON file path
+        # Define the CSV file path
         json_file_path = os.path.join(uploads_dir, "resume_data.json")
         
         # Write the JSON data to the file
@@ -216,7 +217,7 @@ class ResumeParser:
         with open(json_file_path, "r", encoding="utf-8") as f:
             content = json.load(f)
 
-        return content
+        return "resume_data.json"
 
 
     def excel_format(self):
@@ -231,8 +232,7 @@ class ResumeParser:
             else:
                 rows.append({"Section": section, "Content": str(items)})
 
-        # Define the uploads directory
-        uploads_dir = "uploads"
+        uploads_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'uploads'))
         os.makedirs(uploads_dir, exist_ok=True)  # Create the directory if it doesn't exist
 
         # Define the Excel file path
@@ -247,5 +247,5 @@ class ResumeParser:
         # df_read = pd.read_excel(excel_file_path)
 
 
-        return df  # Return the DataFrame if needed
+        return "resume_data.xlsx"  # Return the DataFrame if needed
 

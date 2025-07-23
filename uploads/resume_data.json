@@ -1,0 +1,63 @@
+{
+    "name": "Praveen Tak",
+    "phone": "9462096002",
+    "email": "praveentak715@gmail.com",
+    "links": [],
+    "personal_info": [
+        "PROFILE"
+    ],
+    "experience": [
+        "WORK EXPERIENCE",
+        "Feb 2025 – Apr 2025\tProject Trainee – Defence Research and Development Organisation (DRDO)\t\t\t\t\t Jodhpur, India\nDomain: Machine Learning | Computer Vision | Deep Learning",
+        "Key Responsibilities & Learnings:",
+        "Worked on the project “Painting Generation using CycleGANs” exploring advanced concepts in image-to-image translation using Generative Adversarial Networks.",
+        "Implemented neural network models using Python, TensorFlow/PyTorch, and other ML libraries.",
+        "Performed data preprocessing, augmentation, and evaluation of generated outputs."
+    ],
+    "projects": [
+        "PROJECTS",
+        "Jan 2025  Feb 2025\tMushroom Classification — Machine Learning"
+    ],
+    "education": [
+        "EDUCATION",
+        "Sep 2022 – Jul 2025 \tBachelor of Science (PMCS), Lachoo Memorial    \t          84.50% of College Science & Technology, Jodhpur",
+        "May 2021 – Jul 2022 \tXII (Science), Army Public School, Jodhpur \t\t          85.00%",
+        "Apr 2019 – Apr 2020 \tX, Army Public School, Jodhpur\t\t                       87.83%"
+    ],
+    "skills": [
+        "Aug 2023  Jan 2025\tFull Stack Data Science Pro — PW Skills",
+        "Feb 2024  Feb 2024\tPython Stack — Great Learning",
+        "Oct 2023  Oct 2023\tPython for Data Science — Udemy"
+    ],
+    "languages": [
+        "Programming Languages: Python, Java, SQL, C, C++",
+        "Machine Learning & Data Analysis: Scikit-learn, TensorFlow, Pandas, NumPy, Matplotlib",
+        "Web Development: Flask, FastAPI, HTML, CSS",
+        "Tools: Power BI, Excel"
+    ],
+    "certifications": [
+        "CERTIFICATES",
+        "Jul 2025 \tAWS Submit — Amazon Web Services (AWS)",
+        "Jul 2025 \tTata GenAI Powered Data Analytics Job Simulation — Forage",
+        "Jun 2025 \tFinQuest — Department of Finance Studies, University of Delhi",
+        "Jun 2025\tCentral India Hackathon 2.0 — Unstop",
+        "Oct 2024\tCodemathon 2024 — Department of Mathematics, NIT Kurukshetra",
+        "May 2023\tLearn Python & Machine Learning — Microsoft Learn Student Ambassador, Google Developer Student Clubs",
+        "Mar 2023\tCloud Technical Series — Google"
+    ],
+    "achievements": [
+        "ACHIEVEMENTS",
+        "Finalist, Central India Hackathon 2.0",
+        "Honours in B.Sc.",
+        "Winner, Hourly Problem (Sandhnaam 2025)",
+        "Runner-Up, Overnight Problem (Sandhnaam 2025)",
+        "Winner, MiniHackathon 2024"
+    ],
+    "interests": [
+        "EXTRA-CURRICULAR ACTIVITIES",
+        "Poster Making Competition Winner – National Mathematics Day",
+        "Active participant in coding competitions and hackathons",
+        "Calligraphy Competition Winner  APS Session 2021-22",
+        "National Reading (English)  APS Session 2021-22"
+    ]
+}

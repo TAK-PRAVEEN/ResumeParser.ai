@@ -10,13 +10,12 @@ template_path = os.path.join(base_path, 'frontend', 'templates')
 static_path = os.path.join(base_path, 'frontend', 'static')
 
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(filename='app.log', level=logging.DEBUG, format='%(asctime)s %(levelname)s %(message)s')
+
 
 app = Flask(__name__, template_folder=template_path, static_folder=static_path)
 app.secret_key = "account123456789"
 
-UPLOAD_DIR = os.path.join(os.getcwd(), 'uploads')
-os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 @app.route('/')
 def home():
@@ -60,6 +59,7 @@ def check_email():
 @app.route("/parsing", methods=["GET", "POST"])
 def parsing():
     if request.method == "POST":
+        logging.debug("Just entered into parsing page")
         if 'resume' not in request.files:
             return jsonify({'msg': 'No file part'}), 400
            
@@ -68,15 +68,15 @@ def parsing():
             return jsonify({'msg': 'No selected file'}), 400
            
         # Save the file temporarily with a unique name
-        unique_filename = f"{uuid.uuid4()}_{file.filename}"
-        file_path = os.path.join(static_path, unique_filename)
+        unique_filename = f"{file.filename}"
+
+        uploads_dir = "uploads"
+        os.makedirs(uploads_dir, exist_ok=True)
+
+        file_path = os.path.join(uploads_dir, unique_filename)
         file.save(file_path)
-
-        # Check if the file is empty
-        if os.path.getsize(file_path) == 0:
-            os.remove(file_path)  # Clean up the empty file
-            return jsonify({'msg': 'Uploaded file is empty'}), 400
-
+        logging.debug(f"File Path =  {file_path}")
+        
         # Use ResumeParser to parse the resume
         try:
             email = session.get('user_email')  # Retrieve email from session
@@ -84,28 +84,28 @@ def parsing():
                 return jsonify({'msg': 'User  not logged in'}), 401  # Ensure user is logged in
 
             resume_data = ResumeParser(file_path).section_identification()
+            logging.debug(f"Resume Data: {resume_data}")
 
-            unique_id = uuid.uuid4()
-            session['id'] = unique_id
             session['file_path'] = file_path  # Store the file path in session for download
 
             print("Parsed Data:", resume_data) 
 
-            resume_ops.insert_resume(unique_id, email, file)
-    
+            resume_ops.insert_resume(email, resume_data)
+            logging.debug("Inserting the resume into mongodb.")
             return jsonify(resume_data)  # Return parsed data as JSON
         except Exception as e:
             print("Error parsing resume:", e)
             return jsonify({'msg': 'Error parsing resume', 'error': str(e)}), 500
-        finally:
-            # Ensure the file is deleted after processing
-            if os.path.exists(file_path):
-                os.remove(file_path)
+        # finally:
+        #     # Ensure the file is deleted after processing
+        #     if os.path.exists(file_path):
+        #         os.remove(file_path)
     return render_template('parsing.html')
 
 
 @app.route('/upload', methods=['POST'])
 def upload_resume():
+    logging.debug("Wow just entered upload_resume function")
     if 'resume' not in request.files:
         return jsonify({'msg': 'No file part'}), 400
 
@@ -123,32 +123,41 @@ def upload_resume():
         return jsonify({'msg': 'Error', 'error': str(e)}), 500
 
 
-@app.route("/download/<format>")
-def download_file(format):
-    file_id = session.get("file_id")  # Get the file ID from the session
-    if not file_id:
-        return jsonify({"error": "Missing file ID"}), 400
-
+@app.route("/download")
+def download_file():
+    logging.debug("Wow just entered download_file function")
     try:
-        # Retrieve the file from MongoDB
-        file_path = resume_ops.get_file_from_db(file_id)
-
-        # Use ResumeParser to convert the file to the requested format
+        format = request.args.get("format")
+    
+        logging.debug(f"Format = {format}")
+        file_path = session.get('file_path')
+        logging.debug(f"Going to convert the file {file_path}")
+        
         resume_parser = ResumeParser(file_path)
         if format == "json":
-            output_path = resume_parser.json_format()
+            output_file = resume_parser.json_format()
         elif format == "csv":
-            output_path = resume_parser.csv_format()
+            output_file = resume_parser.csv_format()
         elif format == "excel":
-            output_path = resume_parser.excel_format()
+            output_file = resume_parser.excel_format()
         else:
+            logging.error("Getting issue in fromatting of file.")
             return jsonify({"error": "Invalid format"}), 400
+        
+        uploads_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'uploads'))
+        os.makedirs(uploads_dir, exist_ok=True)  # Create the directory if it doesn't exist
+
+        output_path = os.path.join(uploads_dir, output_file)
+        logging.debug("Format selected and going to download formatted file.")
+        logging.debug(f"Output Path = {output_path}")
 
         return send_file(output_path, as_attachment=True)
-
+    
     except Exception as e:
         logging.exception("Download failed")
         return jsonify({"error": "Server error", "details": str(e)}), 500
+
+    
 
 @app.route('/terms-and-conditions')
 def terms():
