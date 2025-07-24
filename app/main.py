@@ -66,19 +66,28 @@ def login():
 def google_login():
     if not google.authorized:
         return redirect(url_for('google.login'))
-    resp = google.get('/oauth2/v2/userinfo')
-    assert resp.ok, resp.text
-    user_info = resp.json()
-    email = user_info['emails'][0]['value']  # Get the user's email
-
-    # Store the email in the session
-    session['user_email'] = email
-
-    # Optionally, you can check if the user exists in your database and register them if not
-    if not user_ops.get_user_by_email(email):
-        user_ops.register_user(email, "default_password")  # Register with a default password or handle accordingly
     
-    return redirect(url_for('parsing'))  # Redirect to home after login
+    try:
+        resp = google.get('/oauth2/v2/userinfo')
+        assert resp.ok, resp.text
+        user_info = resp.json()
+        
+        email = user_info.get('emails', [{}])[0].get('value')
+        if not email:
+            return "Email not found in user info", 400  # Return an error if email is not found
+
+        # Store the email in the session
+        session['user_email'] = email
+
+        # Check if the user exists in your database and register them if not
+        if not user_ops.get_user_by_email(email):
+            user_ops.register_user(email, "default_password")  # Register with a default password or handle accordingly
+        
+        return redirect(url_for('parsing'))  # Redirect to parsing page after login
+
+    except Exception as e:
+        return f"Error during login: {e}", 500  # Return an error message
+
 
 @app.route('/check_email', methods=['POST'])
 def check_email():
@@ -173,5 +182,5 @@ def privacy():
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=port, debug=True)
 
