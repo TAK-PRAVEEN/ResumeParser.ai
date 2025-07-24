@@ -62,7 +62,6 @@ python-dateutil==2.9.0.post0
 python-docx==1.2.0
 python-dotenv==1.1.1
 pytz==2025.2
-pywin32==310
 PyYAML==6.0.2
 pyzmq==27.0.0
 regex==2024.11.6
