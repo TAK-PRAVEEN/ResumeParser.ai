@@ -64,7 +64,7 @@ def login():
 def google_login():
     if not google.authorized:
         return redirect(url_for('google.login'))
-    resp = google.get('/plus/v1/people/me')
+    resp = google.get('/oauth2/v2/userinfo')
     assert resp.ok, resp.text
     user_info = resp.json()
     email = user_info['emails'][0]['value']  # Get the user's email
