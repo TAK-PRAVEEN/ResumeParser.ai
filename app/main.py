@@ -75,7 +75,7 @@ def google_login():
         assert resp.ok, resp.text
         user_info = resp.json()
         
-        email = user_info.get('emails', [{}])[0].get('value')
+        email = email = user_info.get('email')
         if not email:
             return "Email not found in user info", 400  # Return an error if email is not found
 
