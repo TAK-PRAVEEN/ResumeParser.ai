@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify, render_template, session, send_file, redirect, url_for
+from werkzeug.middleware.proxy_fix import ProxyFix
 from flask_dance.contrib.google import make_google_blueprint, google
 from database import user_ops, resume_ops
 from resume_parser import ResumeParser
@@ -15,6 +16,7 @@ static_path = os.path.join(base_path, 'frontend', 'static')
 logging.basicConfig(filename='app.log', level=logging.WARNING, format='%(asctime)s %(levelname)s %(message)s')
 
 app = Flask(__name__, template_folder=template_path, static_folder=static_path)
+app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 app.secret_key = "account123456789"
 
 # Set up Google OAuth
