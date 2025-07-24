@@ -456,7 +456,7 @@ body::before {
 }
 #modal-content button.google-btn {
     width: 100%;
-    border: 2px dashed #9ca3af; /* gray-400 */
+    border: 1px dashed #9ca3af; /* gray-400 */
     border-radius: 5rem;
     display: flex;
     align-items: center;

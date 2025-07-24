@@ -12,7 +12,7 @@ base_path = os.path.abspath(os.path.dirname(__file__))
 template_path = os.path.join(base_path, 'frontend', 'templates')
 static_path = os.path.join(base_path, 'frontend', 'static')
 
-logging.basicConfig(filename='app.log', level=logging.DEBUG, format='%(asctime)s %(levelname)s %(message)s')
+logging.basicConfig(filename='app.log', level=logging.WARNING, format='%(asctime)s %(levelname)s %(message)s')
 
 app = Flask(__name__, template_folder=template_path, static_folder=static_path)
 app.secret_key = "account123456789"
