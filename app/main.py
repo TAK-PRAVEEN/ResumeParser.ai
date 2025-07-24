@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify, render_template, session, send_file, redirect, url_for
 from flask_dance.contrib.google import make_google_blueprint, google
-from app.database import user_ops, resume_ops
+from .database import user_ops, resume_ops
 from app.resume_parser import ResumeParser
 import os
 import logging
