@@ -20,7 +20,12 @@ app.secret_key = "account123456789"
 # Set up Google OAuth
 client_id = os.getenv('GOOGLE_CLIENT_ID')
 client_secret = os.getenv('GOOGLE_CLIENT_SECRET')
-google_bp = make_google_blueprint(client_id=client_id, client_secret=client_secret, redirect_to='google_login')
+google_bp = make_google_blueprint(
+    client_id=client_id,
+    client_secret=client_secret,
+    scope=["profile", "email"],
+    redirect_url="/google_login"
+)
 app.register_blueprint(google_bp, url_prefix='/google_login')
 
 @app.route('/')
