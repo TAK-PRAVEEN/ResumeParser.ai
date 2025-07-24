@@ -77,8 +77,8 @@ def google_login():
     # Optionally, you can check if the user exists in your database and register them if not
     if not user_ops.get_user_by_email(email):
         user_ops.register_user(email, "default_password")  # Register with a default password or handle accordingly
-
-    return redirect(url_for('home'))  # Redirect to home after login
+    
+    return redirect(url_for('parsing'))  # Redirect to home after login
 
 @app.route('/check_email', methods=['POST'])
 def check_email():
