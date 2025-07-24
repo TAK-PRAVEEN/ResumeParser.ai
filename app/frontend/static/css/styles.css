@@ -148,11 +148,13 @@ body::before {
 @media (min-width: 640px) {
     .features-cards {
         grid-template-columns: repeat(2, 1fr);
+        align-items: center;
     }
 }
 @media (min-width: 768px) {
     .features-cards {
         grid-template-columns: repeat(4, 1fr);
+        align-items: center;
     }
 }
 .feature-card {
