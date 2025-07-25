@@ -17,6 +17,11 @@ logging.basicConfig(filename='app.log', level=logging.WARNING, format='%(asctime
 
 app = Flask(__name__, template_folder=template_path, static_folder=static_path)
 app.secret_key = "account123456789"
+app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
+    # Configures the WSGI middleware for handling proxies:
+        # ProxyFix: helps Flask work correctly behind reverse proxies (like Nginx)
+        # x_proto=1: tells Flask to trust the X-Forwarded-Proto header
+        # x_host=1: tells Flask to trust the X-Forwarded-Host header
 
 # Set up Google OAuth
 client_id = os.getenv('GOOGLE_CLIENT_ID')
