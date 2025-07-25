@@ -9,14 +9,13 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-base_path = os.path.abspath(os.path.dirname(__file__))
-template_path = os.path.join(base_path, 'frontend', 'templates')
-static_path = os.path.join(base_path, 'frontend', 'static')
+base_path = os.path.abspath(os.path.dirname(__file__)) # gets the absolute path of the directory where the current script is located
+template_path = os.path.join(base_path, 'frontend', 'templates') # constructs the path to the 'templates' directory within the 'frontend' directory
+static_path = os.path.join(base_path, 'frontend', 'static') # constructs the path to the 'static' directory within the 'frontend' directory
 
-logging.basicConfig(filename='app.log', level=logging.WARNING, format='%(asctime)s %(levelname)s %(message)s')
+logging.basicConfig(filename='app.log', level=logging.WARNING, format='%(asctime)s %(levelname)s %(message)s') # logging 
 
 app = Flask(__name__, template_folder=template_path, static_folder=static_path)
-app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 app.secret_key = "account123456789"
 
 # Set up Google OAuth
@@ -35,25 +34,34 @@ app.register_blueprint(google_bp, url_prefix='/google_login')
 
 @app.route('/')
 def home():
+    """
+    Route to home.html.
+    """
     return render_template("home.html")
 
 @app.route('/register', methods=['POST'])
 def register():
+    """
+    Handles the Register Modal for the Parsing Page.
+    """
     email = request.form.get('register-email') 
     password = request.form.get('register-password') 
 
     if not email or not password:
-        return jsonify({'msg': 'Missing form fields'}), 400  # Add this for safety
+        return jsonify({'msg': 'Missing form fields'}), 400 
 
     if user_ops.get_user_by_email(email):
         return jsonify({'msg': 'Email already exists'}), 409
 
     user_ops.register_user(email, password)
-    session['user_email'] = email  # Store email in session
+    session['user_email'] = email 
     return jsonify({'msg': 'Registration successful'}), 201
 
 @app.route('/login', methods=['POST'])
 def login():
+    """
+    Handles the Login Modal for the Parsing Page.
+    """
     email = request.form.get('login-email')
     password = request.form.get('login-password')
     
@@ -61,12 +69,15 @@ def login():
         return jsonify({'msg': 'Missing form fields'}), 400
     
     if user_ops.validate_login(email, password):
-        session['user_email'] = email  # Store email in session
+        session['user_email'] = email  
         return jsonify({'msg': 'Login Successful'}), 200  
     return jsonify({'msg': 'Invalid Email/Password'}), 401  
 
 @app.route('/google_login')
 def google_login():
+    """
+    Handles the Login through Google API for the Parsing Page.
+    """
     if not google.authorized:
         return redirect(url_for('google.login'))
     
@@ -77,23 +88,24 @@ def google_login():
         
         email = email = user_info.get('email')
         if not email:
-            return "Email not found in user info", 400  # Return an error if email is not found
-
-        # Store the email in the session
+            return "Email not found in user info", 400  
+        
         session['user_email'] = email
 
-        # Check if the user exists in your database and register them if not
         if not user_ops.get_user_by_email(email):
-            user_ops.register_user(email, "default_password")  # Register with a default password or handle accordingly
+            user_ops.register_user(email, "default_password")  
         
-        return redirect(url_for('parsing'))  # Redirect to parsing page after login
+        return redirect(url_for('parsing')) 
 
     except Exception as e:
-        return f"Error during login: {e}", 500  # Return an error message
+        return f"Error during login: {e}", 500  
 
 
 @app.route('/check_email', methods=['POST'])
 def check_email():
+    """
+    Checks the valid email through database module.
+    """
     data = request.get_json()
     email = data.get('email')
     existing_user = user_ops.get_user_by_email(email)
@@ -101,6 +113,9 @@ def check_email():
 
 @app.route("/parsing", methods=["GET", "POST"])
 def parsing():
+    """
+    Handles the parsing.html page.
+    """
     if request.method == "POST":
         logging.debug("Just entered into parsing page")
         if 'resume' not in request.files:
@@ -110,7 +125,7 @@ def parsing():
         if file.filename == '':
             return jsonify({'msg': 'No selected file'}), 400
            
-        # Save the file temporarily with a unique name
+        # Save the file
         unique_filename = f"{file.filename}"
 
         uploads_dir = "uploads"
@@ -120,22 +135,21 @@ def parsing():
         file.save(file_path)
         logging.debug(f"File Path =  {file_path}")
         
-        # Use ResumeParser to parse the resume
         try:
-            email = session.get('user_email')  # Retrieve email from session
+            email = session.get('user_email')
             if not email:
-                return jsonify({'msg': 'User  not logged in'}), 401  # Ensure user is logged in
+                return jsonify({'msg': 'User  not logged in'}), 401
 
             resume_data = ResumeParser(file_path).section_identification()
             logging.debug(f"Resume Data: {resume_data}")
 
-            session['file_path'] = file_path  # Store the file path in session for download
+            session['file_path'] = file_path 
 
             print("Parsed Data:", resume_data) 
 
             resume_ops.insert_resume(email, resume_data)
             logging.debug("Inserting the resume into mongodb.")
-            return jsonify(resume_data)  # Return parsed data as JSON
+            return jsonify(resume_data)  
         except Exception as e:
             print("Error parsing resume:", e)
             return jsonify({'msg': 'Error parsing resume', 'error': str(e)}), 500
@@ -143,6 +157,9 @@ def parsing():
 
 @app.route("/download")
 def download_file():
+    """
+    Handles the download of formatted resume on parsing.html.
+    """
     logging.debug("Wow just entered download_file function")
     try:
         format = request.args.get("format")
@@ -163,7 +180,7 @@ def download_file():
             return jsonify({"error": "Invalid format"}), 400
         
         uploads_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'uploads'))
-        os.makedirs(uploads_dir, exist_ok=True)  # Create the directory if it doesn't exist
+        os.makedirs(uploads_dir, exist_ok=True) 
 
         output_path = os.path.join(uploads_dir, output_file)
         logging.debug("Format selected and going to download formatted file.")
@@ -177,10 +194,16 @@ def download_file():
 
 @app.route('/terms-and-conditions')
 def terms():
+    """
+    Handles Terms&Condition.html.
+    """
     return render_template('Terms&Condition.html')
 
 @app.route('/privacy-policy')
 def privacy():
+    """
+    Handles PrivacyPolicy.html.
+    """
     return render_template('PrivacyPolicy.html')
 
 if __name__ == '__main__':
