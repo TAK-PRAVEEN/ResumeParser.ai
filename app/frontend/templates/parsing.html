@@ -22,9 +22,11 @@
   <!-- Upload Section -->
   <section class="upload-section">
     <div class="upload-container">
+      <a href="{{ url_for('home') }}">
+            <img width="48" height="48" src="https://img.icons8.com/fluency-systems-filled/48/home-buton.png" alt="home-buton"/>
+        </a>
       <h2>Upload Your Resume</h2>
       <p>Supported formats: PDF, DOCX, or TXT</p>
-      
       <form id="uploadForm" method="POST" enctype="multipart/form-data">
         <div class="drag-drop-area" id="dragDropArea">
             <div class="icon">
