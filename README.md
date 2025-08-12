@@ -1,4 +1,4 @@
-# Resume Parser AI
+#  <img width="150" height="150" alt="ResumeParser_AI-removebg-preview" src="https://github.com/user-attachments/assets/39796a03-8ba9-4bd9-b503-8775f05ad7c4" align='center'/> ResumeParser AI
 
 A web-based application that parses resumes (PDF/DOCX/TXT) and extracts key candidate information like name, contact details, skills, education, and experience. It supports Google OAuth login, secure file uploads, and downloads parsed data in JSON, CSV, or Excel formats.
 
